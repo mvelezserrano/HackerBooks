@@ -12,6 +12,10 @@
 		55117CBF1AC485E30023223F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 55117CBE1AC485E30023223F /* Images.xcassets */; };
 		55117CC21AC485E30023223F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55117CC01AC485E30023223F /* LaunchScreen.xib */; };
 		55117CCE1AC485E40023223F /* HackerBooksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 55117CCD1AC485E40023223F /* HackerBooksTests.m */; };
+		55117CD91AC487260023223F /* AGTBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 55117CD81AC487260023223F /* AGTBook.m */; };
+		55117CDD1AC489370023223F /* AGTLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 55117CDC1AC489370023223F /* AGTLibrary.m */; };
+		552CC6881AC5DC450000FBE8 /* AGTBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 552CC6861AC5DC450000FBE8 /* AGTBookViewController.m */; };
+		552CC6891AC5DC450000FBE8 /* AGTBookViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 552CC6871AC5DC450000FBE8 /* AGTBookViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +39,13 @@
 		55117CC71AC485E40023223F /* HackerBooksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HackerBooksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		55117CCC1AC485E40023223F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55117CCD1AC485E40023223F /* HackerBooksTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HackerBooksTests.m; sourceTree = "<group>"; };
+		55117CD71AC487260023223F /* AGTBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTBook.h; sourceTree = "<group>"; };
+		55117CD81AC487260023223F /* AGTBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTBook.m; sourceTree = "<group>"; };
+		55117CDB1AC489370023223F /* AGTLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTLibrary.h; sourceTree = "<group>"; };
+		55117CDC1AC489370023223F /* AGTLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTLibrary.m; sourceTree = "<group>"; };
+		552CC6851AC5DC450000FBE8 /* AGTBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTBookViewController.h; sourceTree = "<group>"; };
+		552CC6861AC5DC450000FBE8 /* AGTBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTBookViewController.m; sourceTree = "<group>"; };
+		552CC6871AC5DC450000FBE8 /* AGTBookViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AGTBookViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +87,8 @@
 		55117CB61AC485E30023223F /* HackerBooks */ = {
 			isa = PBXGroup;
 			children = (
+				55117CDA1AC4872A0023223F /* Models */,
+				552CC6841AC5DBEF0000FBE8 /* Controllers */,
 				55117CBB1AC485E30023223F /* AppDelegate.h */,
 				55117CBC1AC485E30023223F /* AppDelegate.m */,
 				55117CBE1AC485E30023223F /* Images.xcassets */,
@@ -109,6 +122,27 @@
 				55117CCC1AC485E40023223F /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		55117CDA1AC4872A0023223F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				55117CD71AC487260023223F /* AGTBook.h */,
+				55117CD81AC487260023223F /* AGTBook.m */,
+				55117CDB1AC489370023223F /* AGTLibrary.h */,
+				55117CDC1AC489370023223F /* AGTLibrary.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		552CC6841AC5DBEF0000FBE8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				552CC6851AC5DC450000FBE8 /* AGTBookViewController.h */,
+				552CC6861AC5DC450000FBE8 /* AGTBookViewController.m */,
+				552CC6871AC5DC450000FBE8 /* AGTBookViewController.xib */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -193,6 +227,7 @@
 			files = (
 				55117CC21AC485E30023223F /* LaunchScreen.xib in Resources */,
 				55117CBF1AC485E30023223F /* Images.xcassets in Resources */,
+				552CC6891AC5DC450000FBE8 /* AGTBookViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,7 +245,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55117CDD1AC489370023223F /* AGTLibrary.m in Sources */,
 				55117CBD1AC485E30023223F /* AppDelegate.m in Sources */,
+				55117CD91AC487260023223F /* AGTBook.m in Sources */,
+				552CC6881AC5DC450000FBE8 /* AGTBookViewController.m in Sources */,
 				55117CBA1AC485E30023223F /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,6 +434,7 @@
 				55117CD31AC485E40023223F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		55117CD41AC485E40023223F /* Build configuration list for PBXNativeTarget "HackerBooksTests" */ = {
 			isa = XCConfigurationList;
@@ -404,6 +443,7 @@
 				55117CD61AC485E40023223F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

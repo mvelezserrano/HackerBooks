@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "AGTBookViewController.h"
+#import "AGTLibrary.h"
 
 @interface AppDelegate ()
 
@@ -18,6 +20,25 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    
+    // Creamos un modelo
+    AGTLibrary *model = [[AGTLibrary alloc] init];
+    
+    // Controladores
+    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[model primerLibro]];
+    
+    NSLog(@"%@", [model primerLibro]);
+    
+    self.window.rootViewController = bookVC;
+    
+    
+    
+    
+    
+    
+    
+    
+    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
