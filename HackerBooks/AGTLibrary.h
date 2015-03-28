@@ -12,6 +12,8 @@
 @interface AGTLibrary : NSObject
 
 
+-(id) initWithJSON: (NSData *) json;
+
 -(AGTBook *) primerLibro;
 
 // Número total de libros

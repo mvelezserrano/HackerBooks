@@ -20,22 +20,19 @@
 
 #pragma mark - Init
 
--(id) init {
+-(id) initWithJSON: (NSData *) json {
     if (self = [super init]) {
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://t.co/K9ziV0z3SJ"]];
-        NSURLResponse *response = [[NSURLResponse alloc] init];
-        NSError *error;
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         
-        if (data != nil) {
-            if ([[NSJSONSerialization JSONObjectWithData:data
+        NSError *error;
+        if (json != nil) {
+            if ([[NSJSONSerialization JSONObjectWithData:json
                                                  options:kNilOptions
                                                    error:&error] isKindOfClass:[NSArray class]]) {
                 NSLog(@"Es un NSArray!");
             } else {
                 NSLog(@"Es un NSDictionary!");
             }
-            NSArray * JSONObjects = [NSJSONSerialization JSONObjectWithData:data
+            NSArray * JSONObjects = [NSJSONSerialization JSONObjectWithData:json
                                                                     options:kNilOptions
                                                                       error:&error];
             

@@ -22,13 +22,11 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
+    // Obtenemos el JSON en formato NSData, ya sea descargándolo o leyéndolo del directorio Documents.
     NSData *jsonData = [self getJSONForModel];
     
-    
-    
-    
     // Creamos un modelo
-    AGTLibrary *model = [[AGTLibrary alloc] init];
+    AGTLibrary *model = [[AGTLibrary alloc] initWithJSON:jsonData];
     
     AGTBook *testBook = [model primerLibro];
     
@@ -93,7 +91,12 @@
         [defaults synchronize];
         
         // Descargamos el JSON y lo guardamos en Documents de mi Sandbox
-        json = [self downloadJSON];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://t.co/K9ziV0z3SJ"]];
+        NSURLResponse *response = [[NSURLResponse alloc] init];
+        
+        json = [NSURLConnection sendSynchronousRequest:request
+                                     returningResponse:&response
+                                                 error:&err];
         BOOL rc = [json writeToURL:url
                            options:NSDataWritingAtomic
                              error:&err];
@@ -108,29 +111,19 @@
     } else {
         
         // Leemos el JSON del directorio Documents
-        NSData *readData = [NSData dataWithContentsOfURL:url
+        json = [NSData dataWithContentsOfURL:url
                                                  options:NSDataReadingMappedIfSafe
                                                    error:&err];
         // Comprobar que se leyó
-        if (readData == nil) {
+        if (json == nil) {
             // Error!
             NSLog(@"Error al leer: %@", err.localizedDescription);
-        } else {
-            NSLog(@"Hemos leido: %@", [[NSString alloc] initWithData:readData
-                                                            encoding:NSUTF8StringEncoding]);
         }
     }
     
     return json;
 }
 
--(NSData *) downloadJSON {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://t.co/K9ziV0z3SJ"]];
-    NSURLResponse *response = [[NSURLResponse alloc] init];
-    NSError *error;
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    
-    return data;
-}
+
 
 @end
