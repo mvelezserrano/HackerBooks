@@ -44,7 +44,7 @@
 #pragma mark - Utils
 
 - (void)syncViewToModel {
-    self.bookImage.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:self.model.imageURL]];
+    self.bookImage.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:[NSURL URLWithString: self.model.imageURL]]];
     self.bookTitle.text = self.model.title;
     self.bookAuthors.text = [self arrayToString:self.model.authors];
     self.bookTags.text = [self arrayToString:self.model.tags];

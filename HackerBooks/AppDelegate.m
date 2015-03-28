@@ -22,12 +22,20 @@
     // Override point for customization after application launch.
     
     // Creamos un modelo
-    AGTLibrary *model = [[AGTLibrary alloc] init];
+    //AGTLibrary *model = [[AGTLibrary alloc] init];
+    AGTBook *testBook = [[AGTBook alloc] initWithTitle:@"Título"
+                                               authors:@[@"Autor 1", @"Autor 2"]
+                                                  tags:@[@"Tag 1", @"Tag 2"]
+                                              imageURL:@"http://hackershelf.com/media/cache/b4/24/b42409de128aa7f1c9abbbfa549914de.jpg"
+                                                pdfURL:@"https://progit2.s3.amazonaws.com/en/2015-03-06-439c2/progit-en.376.pdf"];
+    
     
     // Controladores
-    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[model primerLibro]];
+    //AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[model primerLibro]];
+    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
+
     
-    NSLog(@"%@", [model primerLibro]);
+    NSLog(@"URL: %@", testBook.imageURL);
     
     self.window.rootViewController = bookVC;
     

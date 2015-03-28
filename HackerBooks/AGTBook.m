@@ -13,8 +13,8 @@
 -(id) initWithTitle: (NSString *) title
             authors: (NSArray *) authors
                tags: (NSArray *) tags
-           imageURL: (NSURL *) imageURL
-             pdfURL: (NSURL *) pdfURL{
+           imageURL: (NSString *) imageURL
+             pdfURL: (NSString *) pdfURL{
     
     if (self = [super init]) {
         _title = title;

@@ -66,6 +66,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		55114AE31AC6B54100C7AC4A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		55117CAB1AC485E30023223F = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +94,7 @@
 		55117CB61AC485E30023223F /* HackerBooks */ = {
 			isa = PBXGroup;
 			children = (
+				55114AE31AC6B54100C7AC4A /* Resources */,
 				55117CDA1AC4872A0023223F /* Models */,
 				552CC6841AC5DBEF0000FBE8 /* Controllers */,
 				55117CBB1AC485E30023223F /* AppDelegate.h */,
