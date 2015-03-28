@@ -29,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		55114AE61AC6C6A200C7AC4A /* Settings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
 		55117CB41AC485E30023223F /* HackerBooks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HackerBooks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55117CB81AC485E30023223F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		55117CB91AC485E30023223F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -102,6 +103,7 @@
 				55117CBE1AC485E30023223F /* Images.xcassets */,
 				55117CC01AC485E30023223F /* LaunchScreen.xib */,
 				55117CB71AC485E30023223F /* Supporting Files */,
+				55114AE61AC6C6A200C7AC4A /* Settings.h */,
 			);
 			path = HackerBooks;
 			sourceTree = "<group>";

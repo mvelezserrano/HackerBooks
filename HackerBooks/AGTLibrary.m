@@ -28,6 +28,13 @@
         NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         
         if (data != nil) {
+            if ([[NSJSONSerialization JSONObjectWithData:data
+                                                 options:kNilOptions
+                                                   error:&error] isKindOfClass:[NSArray class]]) {
+                NSLog(@"Es un NSArray!");
+            } else {
+                NSLog(@"Es un NSDictionary!");
+            }
             NSArray * JSONObjects = [NSJSONSerialization JSONObjectWithData:data
                                                                     options:kNilOptions
                                                                       error:&error];
@@ -36,7 +43,15 @@
                 // No ha habido error
                 for(NSDictionary *dict in JSONObjects){
                     AGTBook *book = [[AGTBook alloc] initWithDictionary:dict];
-                    [self.books addObject:book];
+                    
+                    /* Si aún no se ha creado el NSMutableArray, lo creamos con el primer libro, sino
+                     añadimos el libro al NSMutableArray. */
+                    if (!self.books) {
+                        self.books = [NSMutableArray arrayWithObject:book];
+                    }
+                    else {
+                        [self.books addObject:book];
+                    }
                 }
             }else{
                 // Se ha producido un error al parsear el JSON

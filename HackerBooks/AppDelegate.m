@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "AGTBookViewController.h"
 #import "AGTLibrary.h"
+#import "Settings.h"
 
 @interface AppDelegate ()
 
@@ -21,29 +22,24 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    // Creamos un modelo
-    //AGTLibrary *model = [[AGTLibrary alloc] init];
-    AGTBook *testBook = [[AGTBook alloc] initWithTitle:@"Título"
-                                               authors:@[@"Autor 1", @"Autor 2"]
-                                                  tags:@[@"Tag 1", @"Tag 2"]
-                                              imageURL:@"http://hackershelf.com/media/cache/b4/24/b42409de128aa7f1c9abbbfa549914de.jpg"
-                                                pdfURL:@"https://progit2.s3.amazonaws.com/en/2015-03-06-439c2/progit-en.376.pdf"];
+    NSData *jsonData = [self getJSONForModel];
     
+    
+    
+    
+    // Creamos un modelo
+    AGTLibrary *model = [[AGTLibrary alloc] init];
+    
+    AGTBook *testBook = [model primerLibro];
     
     // Controladores
-    //AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[model primerLibro]];
     AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
 
     
     NSLog(@"URL: %@", testBook.imageURL);
+    NSLog(@"Número de libros en el array: %d", [model booksCount]);
     
     self.window.rootViewController = bookVC;
-    
-    
-    
-    
-    
-    
     
     
     
@@ -72,6 +68,69 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+
+#pragma marks - Utils
+
+-(NSData *) getJSONForModel {
+    NSData *json;
+    // Averiguar la url a la carpeta de caches
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
+                               inDomains:NSUserDomainMask];
+    NSURL *url = [urls lastObject];
+    // Añadir el componente del nombre del fichero
+    url = [url URLByAppendingPathComponent:@"books_readable.json"];
+    NSError *err = nil;
+    
+    // Comprobamos si arrancamos la aplicación por primera vez
+    // Si arrancamos por primera vez....
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults objectForKey:FIRST_BOOT]) {
+        
+        [defaults setObject:@"1" forKey:FIRST_BOOT];
+        [defaults synchronize];
+        
+        // Descargamos el JSON y lo guardamos en Documents de mi Sandbox
+        json = [self downloadJSON];
+        BOOL rc = [json writeToURL:url
+                           options:NSDataWritingAtomic
+                             error:&err];
+        
+        // Comprobar que se guardó
+        if (rc == NO) {
+            // Error!
+            NSLog(@"Error al guardar: %@", err.localizedDescription);
+        }
+        
+    // ... y si no es el primer arranque....
+    } else {
+        
+        // Leemos el JSON del directorio Documents
+        NSData *readData = [NSData dataWithContentsOfURL:url
+                                                 options:NSDataReadingMappedIfSafe
+                                                   error:&err];
+        // Comprobar que se leyó
+        if (readData == nil) {
+            // Error!
+            NSLog(@"Error al leer: %@", err.localizedDescription);
+        } else {
+            NSLog(@"Hemos leido: %@", [[NSString alloc] initWithData:readData
+                                                            encoding:NSUTF8StringEncoding]);
+        }
+    }
+    
+    return json;
+}
+
+-(NSData *) downloadJSON {
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://t.co/K9ziV0z3SJ"]];
+    NSURLResponse *response = [[NSURLResponse alloc] init];
+    NSError *error;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    
+    return data;
 }
 
 @end
