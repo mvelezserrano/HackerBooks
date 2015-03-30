@@ -28,14 +28,15 @@
     // Creamos un modelo de librería
     AGTLibrary *model = [[AGTLibrary alloc] initWithJSON:jsonData];
     
-    AGTBook *testBook = [model primerLibro];
+    //AGTBook *testBook = [model primerLibro];
+    AGTBook *testBook = [model randomLibro];
     
     // Controladores
+    //AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
     AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
-
     
-    //NSLog(@"URL: %@", testBook.imageURL);
-    //NSLog(@"Número de libros en el array: %d", [model booksCount]);
+    NSLog(@"Los tags son: %@", [[model tags] componentsJoinedByString:@", "]);
+    
     
     self.window.rootViewController = bookVC;
     
@@ -145,7 +146,7 @@
     
     // Averiguar la url a la carpeta de Application Support.
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSArray *urls = [fm URLsForDirectory:NSApplicationSupportDirectory
+    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory//NSApplicationSupportDirectory
                                inDomains:NSUserDomainMask];
     NSURL *url = [urls lastObject];
     

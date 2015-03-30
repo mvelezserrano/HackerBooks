@@ -16,6 +16,8 @@
 
 -(AGTBook *) primerLibro;
 
+-(AGTBook *) randomLibro;
+
 // Número total de libros
 -(NSUInteger) booksCount;
 

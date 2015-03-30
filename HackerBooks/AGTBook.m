@@ -11,8 +11,8 @@
 @implementation AGTBook
 
 -(id) initWithTitle: (NSString *) title
-            authors: (NSArray *) authors
-               tags: (NSArray *) tags
+            authors: (NSString *) authors
+               tags: (NSString *) tags
            imageURL: (NSString *) imageURL
              pdfURL: (NSString *) pdfURL{
     
@@ -30,20 +30,11 @@
 
 -(id) initWithDictionary: (NSDictionary *) dict {
     return [self initWithTitle:[dict objectForKey:@"title"]
-                       authors:[self createArrayFromJSONMultipleString:[dict objectForKey:@"authors"]]
-                          tags:[self createArrayFromJSONMultipleString:[dict objectForKey:@"tags"]]
+                       authors:[dict objectForKey:@"authors"]
+                          tags:[dict objectForKey:@"tags"]
                       imageURL:[dict objectForKey:@"image_url"]
                         pdfURL:[dict objectForKey:@"pdf_url"]];
 }
 
-
-#pragma mark - Utils
-
--(NSArray*) createArrayFromJSONMultipleString: (NSString *)JSONMultipleString{
-    
-    NSArray *elements = [JSONMultipleString componentsSeparatedByString:@", "];
-    
-    return elements;
-}
 
 @end

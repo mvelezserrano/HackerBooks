@@ -11,8 +11,8 @@
 
 @interface AGTLibrary()
 
-@property (strong, nonatomic) NSMutableArray *books;
-@property (strong, nonatomic) NSMutableArray *tags;
+@property (strong, nonatomic) NSMutableArray *arrayOfBooks;
+@property (strong, nonatomic) NSMutableArray *arrayOfTags;
 
 @end
 
@@ -22,6 +22,9 @@
 
 -(id) initWithJSON: (NSData *) json {
     if (self = [super init]) {
+        self.arrayOfBooks = [[NSMutableArray alloc] init];
+        self.arrayOfTags = [[NSMutableArray alloc] init];
+        
         
         NSError *error;
         if ([[NSJSONSerialization JSONObjectWithData:json
@@ -31,10 +34,10 @@
         } else {
             //NSLog(@"Es un NSDictionary!");
         }
+        
         NSArray * JSONObjects = [NSJSONSerialization JSONObjectWithData:json
                                                                 options:kNilOptions
                                                                   error:&error];
-        
         if (JSONObjects != nil) {
             // No ha habido error
             for(NSDictionary *dict in JSONObjects){
@@ -42,22 +45,50 @@
                 
                 
                 /* Gestionar el array de tags desde aquí!!!!!!! */
+                NSArray *bookTags = [self createArrayFromJSONMultipleString:[dict objectForKey:@"tags"]];
+                NSMutableArray *tagsToAdd = [[NSMutableArray alloc] init];
+                for (NSString *bookTag in bookTags) {
+                    //[self.arrayOfTags addObject:bookTag];
+                    NSLog(@"El tag del libro es: %@", bookTag);
+                    if ([self.arrayOfTags count]==0) {
+                        NSLog(@"Añadimos el primer tag");
+                        //[self.arrayOfTags arrayByAddingObject:bookTag];
+                        [tagsToAdd addObject:bookTag];
+                    } else {
+                        for (NSString *tagAlreadySaved in self.arrayOfTags) {
+                            NSLog(@"Entramos al for de los salvados, con el tag salvado: %@", tagAlreadySaved);
+                            if (([bookTag caseInsensitiveCompare:tagAlreadySaved])!=NSOrderedSame) {
+                                NSLog(@"Pero no son iguales!!!");
+                                // El tag no existe
+                                [tagsToAdd addObject:bookTag];
+                                break;
+                            } else {
+                                NSLog(@"YA EXISTE!!!");
+                            }
+                        }
+                    }
+                }
                 
-                
+                [self.arrayOfTags addObjectsFromArray:tagsToAdd];
+                NSLog(@"Añadimos %d elementos a arrayOfTags", [tagsToAdd count]);
+                [tagsToAdd removeAllObjects];
                 
                 /* Si aún no se ha creado el NSMutableArray, lo creamos con el primer libro, sino
                  añadimos el libro al NSMutableArray. */
-                if (!self.books) {
-                    self.books = [NSMutableArray arrayWithObject:book];
-                }
-                else {
-                    [self.books addObject:book];
-                }
+                [self.arrayOfBooks addObject:book];
             }
+            NSLog(@"Longitud del arrayOfTags: %d", [self.arrayOfTags count]);
+            NSLog(@"Longitud del arrayOfBooks: %d", [self.arrayOfBooks count]);
         }else{
             // Se ha producido un error al parsear el JSON
             NSLog(@"Error al parsear JSON: %@", error.localizedDescription);
         }
+        
+        // Ordenar books
+        //[self.arrayOfBooks sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        
+        // Ordenar tags
+        //[self.arrayOfTags sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     }
     
     return self;
@@ -65,12 +96,16 @@
 
 
 -(AGTBook *) primerLibro {
-    return [self.books objectAtIndex:0];
+    return [self.arrayOfBooks objectAtIndex:0];
+}
+
+-(AGTBook *) randomLibro {
+    return [self.arrayOfBooks objectAtIndex:arc4random() % [self.arrayOfBooks count]];
 }
 
 
 -(NSUInteger) booksCount {
-    return self.books.count;
+    return self.arrayOfBooks.count;
 }
 
 
@@ -83,10 +118,9 @@
      Hay que ordenar alfabéticamente el NSMutableArray antes de devolverlo.
      Finalmente convertimos el NSMutableArray en un NSArray para
      devolerlo como resultado del método.*/
+    NSArray *array = [self.arrayOfTags copy];
     
-    NSArray *arrayRetorno;
-    
-    return arrayRetorno;
+    return array;
 }
 
 
@@ -132,6 +166,18 @@
     
     return bookRetorno;
 }
+
+
+
+#pragma mark - Utils
+
+-(NSArray*) createArrayFromJSONMultipleString: (NSString *)JSONMultipleString{
+    
+    NSArray *elements = [JSONMultipleString componentsSeparatedByString:@", "];
+    
+    return elements;
+}
+
 
 
 @end

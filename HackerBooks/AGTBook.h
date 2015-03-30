@@ -11,8 +11,8 @@
 @interface AGTBook : NSObject
 
 @property (copy, nonatomic) NSString *title;
-@property (strong, nonatomic) NSArray *authors;
-@property (strong, nonatomic) NSArray *tags;
+@property (copy, nonatomic) NSString *authors;
+@property (copy, nonatomic) NSString *tags;
 @property (copy, nonatomic) NSString *imageURL;
 @property (copy, nonatomic) NSString *pdfURL;
 
@@ -21,8 +21,8 @@
 
 // Designated
 -(id) initWithTitle: (NSString *) title
-            authors: (NSArray *) authors
-               tags: (NSArray *) tags
+            authors: (NSString *) authors
+               tags: (NSString *) tags
            imageURL: (NSString *) imageURL
              pdfURL: (NSString *) pdfURL;
 
