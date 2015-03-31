@@ -35,8 +35,8 @@
     //AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
     AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
     
-    //NSLog(@"Los tags son: %@", [[model tags] componentsJoinedByString:@", "]);
-    NSLog(@"Libros con el tag python: %d", [model bookCountForTag:@"python"]);
+    NSLog(@"Los tags son: %@", [[model tags] componentsJoinedByString:@", "]);
+    //NSLog(@"Libros con el tag python: %d", [model bookCountForTag:@"python"]);
     
     
     self.window.rootViewController = bookVC;
