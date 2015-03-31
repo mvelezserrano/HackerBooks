@@ -18,6 +18,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *bookAuthors;
 @property (weak, nonatomic) IBOutlet UILabel *bookTags;
 
+- (IBAction)displayPDF:(id)sender;
+
 - (id)initWithModel:(AGTBook *)model;
 
 @end

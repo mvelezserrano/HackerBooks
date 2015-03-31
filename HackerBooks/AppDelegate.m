@@ -10,6 +10,8 @@
 #import "AGTBookViewController.h"
 #import "AGTLibrary.h"
 #import "Settings.h"
+#import "AGTSimplePDFViewController.h"
+#import "AGTLibraryTableViewController.h"
 
 @interface AppDelegate ()
 
@@ -29,17 +31,24 @@
     AGTLibrary *model = [[AGTLibrary alloc] initWithJSON:jsonData];
     
     //AGTBook *testBook = [model primerLibro];
-    AGTBook *testBook = [model randomLibro];
+    //AGTBook *testBook = [model randomLibro];
     
     // Controladores
     //AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
-    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
+    //AGTSimplePDFViewController *pdfVC = [[AGTSimplePDFViewController alloc] initWithModel:testBook];
+    AGTLibraryTableViewController *libTableVC = [[AGTLibraryTableViewController alloc] initWithModel:model
+                                                                                               style:UITableViewStylePlain];
     
-    //NSLog(@"Los tags son: %@", [[model tags] componentsJoinedByString:@", "]);
-    //NSLog(@"Libros con el tag python: %d", [model bookCountForTag:@"python"]);
     
+    // Combinadores
+    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:libTableVC];
+    
+    // RISTRA DE TESTS!!!
+    
+    /*
     NSLog(@"Prueba método 'booksCount': %d", [model booksCount]);
     NSLog(@"Prueba método 'tags': %@", [[model tags] componentsJoinedByString:@", "]);
+    
     NSLog(@"Prueba método 'bookCountForTag: alrorithms': %d", [model bookCountForTag:@"algorithms"]);
     NSArray *arrayDeLibrosOrdenado = [model booksForTag:@"algorithms"];
     NSLog(@"Prueba método 'booksForTag: algorithms'");
@@ -49,11 +58,10 @@
     AGTBook *libro = [model bookForTag:@"algorithms"
                                atIndex:4];
     NSLog(@"Prueba método 'booksForTag: algorithms atIndex: 0' %@", libro.title);
+    */
     
-
     
-    self.window.rootViewController = bookVC;
-    
+    self.window.rootViewController = navVC;
     
     
     self.window.backgroundColor = [UIColor whiteColor];

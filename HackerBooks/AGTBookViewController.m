@@ -7,6 +7,7 @@
 //
 
 #import "AGTBookViewController.h"
+#import "AGTSimplePDFViewController.h"
 
 @interface AGTBookViewController ()
 
@@ -27,6 +28,12 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
+    /* Asegurarse de que no se ocupa toda la pantalla cuando
+     estás en un combinador */
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    // Sincronizar modelo --> vista
     [self syncViewToModel];
 }
 
@@ -41,15 +48,28 @@
 }
 
 
-
-#pragma mark - Utils
-
 - (void)syncViewToModel {
     self.bookImage.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:[NSURL URLWithString: self.model.imageURL]]];
     self.bookTitle.text = self.model.title;
     self.bookAuthors.text = self.model.authors;
     self.bookTags.text = self.model.tags;
 }
+
+
+#pragma marks - Actions
+
+- (IBAction)displayPDF:(id)sender {
+    
+    // Creamos un PDFvC
+    AGTSimplePDFViewController *pdfVC = [[AGTSimplePDFViewController alloc] initWithModel:self.model];
+    
+    // Hacemos push
+    [self.navigationController pushViewController:pdfVC
+                                         animated:YES];
+}
+
+
+#pragma mark - Utils
 
 - (NSString *)arrayToString:(NSArray *)array
 {

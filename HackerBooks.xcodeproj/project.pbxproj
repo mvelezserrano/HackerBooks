@@ -16,6 +16,9 @@
 		55117CDD1AC489370023223F /* AGTLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 55117CDC1AC489370023223F /* AGTLibrary.m */; };
 		552CC6881AC5DC450000FBE8 /* AGTBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 552CC6861AC5DC450000FBE8 /* AGTBookViewController.m */; };
 		552CC6891AC5DC450000FBE8 /* AGTBookViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 552CC6871AC5DC450000FBE8 /* AGTBookViewController.xib */; };
+		55EE13ED1ACB103C009AC512 /* AGTSimplePDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE13EB1ACB103C009AC512 /* AGTSimplePDFViewController.m */; };
+		55EE13EE1ACB103C009AC512 /* AGTSimplePDFViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55EE13EC1ACB103C009AC512 /* AGTSimplePDFViewController.xib */; };
+		55EE13F11ACB1FA1009AC512 /* AGTLibraryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +50,11 @@
 		552CC6851AC5DC450000FBE8 /* AGTBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTBookViewController.h; sourceTree = "<group>"; };
 		552CC6861AC5DC450000FBE8 /* AGTBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTBookViewController.m; sourceTree = "<group>"; };
 		552CC6871AC5DC450000FBE8 /* AGTBookViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AGTBookViewController.xib; sourceTree = "<group>"; };
+		55EE13EA1ACB103C009AC512 /* AGTSimplePDFViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTSimplePDFViewController.h; sourceTree = "<group>"; };
+		55EE13EB1ACB103C009AC512 /* AGTSimplePDFViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTSimplePDFViewController.m; sourceTree = "<group>"; };
+		55EE13EC1ACB103C009AC512 /* AGTSimplePDFViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AGTSimplePDFViewController.xib; sourceTree = "<group>"; };
+		55EE13EF1ACB1FA1009AC512 /* AGTLibraryTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTLibraryTableViewController.h; sourceTree = "<group>"; };
+		55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTLibraryTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +159,11 @@
 				552CC6851AC5DC450000FBE8 /* AGTBookViewController.h */,
 				552CC6861AC5DC450000FBE8 /* AGTBookViewController.m */,
 				552CC6871AC5DC450000FBE8 /* AGTBookViewController.xib */,
+				55EE13EA1ACB103C009AC512 /* AGTSimplePDFViewController.h */,
+				55EE13EB1ACB103C009AC512 /* AGTSimplePDFViewController.m */,
+				55EE13EC1ACB103C009AC512 /* AGTSimplePDFViewController.xib */,
+				55EE13EF1ACB1FA1009AC512 /* AGTLibraryTableViewController.h */,
+				55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -237,6 +250,7 @@
 			files = (
 				55117CC21AC485E30023223F /* LaunchScreen.xib in Resources */,
 				55117CBF1AC485E30023223F /* Images.xcassets in Resources */,
+				55EE13EE1ACB103C009AC512 /* AGTSimplePDFViewController.xib in Resources */,
 				552CC6891AC5DC450000FBE8 /* AGTBookViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -256,7 +270,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				55117CDD1AC489370023223F /* AGTLibrary.m in Sources */,
+				55EE13F11ACB1FA1009AC512 /* AGTLibraryTableViewController.m in Sources */,
 				55117CBD1AC485E30023223F /* AppDelegate.m in Sources */,
+				55EE13ED1ACB103C009AC512 /* AGTSimplePDFViewController.m in Sources */,
 				55117CD91AC487260023223F /* AGTBook.m in Sources */,
 				552CC6881AC5DC450000FBE8 /* AGTBookViewController.m in Sources */,
 				55117CBA1AC485E30023223F /* main.m in Sources */,
