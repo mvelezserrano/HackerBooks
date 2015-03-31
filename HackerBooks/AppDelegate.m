@@ -35,9 +35,22 @@
     //AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
     AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
     
-    NSLog(@"Los tags son: %@", [[model tags] componentsJoinedByString:@", "]);
+    //NSLog(@"Los tags son: %@", [[model tags] componentsJoinedByString:@", "]);
     //NSLog(@"Libros con el tag python: %d", [model bookCountForTag:@"python"]);
     
+    NSLog(@"Prueba método 'booksCount': %d", [model booksCount]);
+    NSLog(@"Prueba método 'tags': %@", [[model tags] componentsJoinedByString:@", "]);
+    NSLog(@"Prueba método 'bookCountForTag: alrorithms': %d", [model bookCountForTag:@"algorithms"]);
+    NSArray *arrayDeLibrosOrdenado = [model booksForTag:@"algorithms"];
+    NSLog(@"Prueba método 'booksForTag: algorithms'");
+    for (AGTBook *each in arrayDeLibrosOrdenado) {
+        NSLog(@"Libro: %@", each.title);
+    }
+    AGTBook *libro = [model bookForTag:@"algorithms"
+                               atIndex:4];
+    NSLog(@"Prueba método 'booksForTag: algorithms atIndex: 0' %@", libro.title);
+    
+
     
     self.window.rootViewController = bookVC;
     

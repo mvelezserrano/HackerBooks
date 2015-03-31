@@ -30,13 +30,13 @@
         
         NSError *error;
         
-        if ([[NSJSONSerialization JSONObjectWithData:json
+        /*if ([[NSJSONSerialization JSONObjectWithData:json
                                              options:kNilOptions
                                                error:&error] isKindOfClass:[NSArray class]]) {
             //NSLog(@"Es un NSArray!");
         } else {
             //NSLog(@"Es un NSDictionary!");
-        }
+        }*/
         
         NSArray * JSONObjects = [NSJSONSerialization JSONObjectWithData:json
                                                                 options:kNilOptions
@@ -124,20 +124,15 @@
 // temáticas. Si no hay libros para una
 // temática, ha de devolver nil.
 -(NSArray *) booksForTag: (NSString *) tag {
-    /* Creamos un NSMutableArray donde iremos almacenando las
-     instancias AGTBook que contengan el tag.
-     Iteramos el NSArray 'books' pasando por cada libro.
-     Leemos uno a uno todos sus tags. Si el tag leído es igual
-     al tag pasado por parámetro, añadimos la instancia al 
-     NSMutableAraray.
-     
-     Finalmente convertimos el NSMutableArray en un NSArray para
-     devolerlo como resultado del método. Si no hay ningún libro
-     que contenga el tag, devolveremos nil.*/
     
     NSMutableArray *booksWithTag = [[NSMutableArray alloc] initWithArray:[self.dictionaryOfTags objectForKey:tag]];
+    [booksWithTag sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     
-    return [booksWithTag copy];
+    if ([booksWithTag count]==0) {
+        return nil;
+    } else {
+        return [booksWithTag copy];
+    }
 }
 
 
@@ -147,10 +142,12 @@
 // para hacer parte de tu trabajo.
 // Si el indice no existe o el tag no existe, ha de devolver nil.
 -(AGTBook *) bookForTag: (NSString *) tag atIndex: (NSUInteger) index {
-    /* Obtenemos el array de libros para ese tag llamando al método
-     anterior y devolvemos el objeto en la posición index. */
     
-    return [[self booksForTag:tag] objectAtIndex:index];
+    if ((index>[[self booksForTag:tag] count]-1)||(![self booksForTag:tag])) {
+        return nil;
+    } else {
+        return [[self booksForTag:tag] objectAtIndex:index];
+    }
 }
 
 
