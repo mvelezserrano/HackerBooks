@@ -14,6 +14,8 @@
 @property (strong, nonatomic) NSMutableArray *arrayOfBooks;
 @property (strong, nonatomic) NSMutableArray *arrayOfTags;
 
+@property (strong, nonatomic) NSMutableDictionary *dictionaryOfTags;
+
 @end
 
 @implementation AGTLibrary
@@ -24,6 +26,7 @@
     if (self = [super init]) {
         self.arrayOfBooks = [[NSMutableArray alloc] init];
         self.arrayOfTags = [[NSMutableArray alloc] init];
+        self.dictionaryOfTags = [[NSMutableDictionary alloc] init];
         
         
         NSError *error;
@@ -42,53 +45,71 @@
             // No ha habido error
             for(NSDictionary *dict in JSONObjects){
                 AGTBook *book = [[AGTBook alloc] initWithDictionary:dict];
+                [self.arrayOfBooks addObject:book];
                 
-                
-                /* Gestionar el array de tags desde aquí!!!!!!! */
                 NSArray *bookTags = [self createArrayFromJSONMultipleString:[dict objectForKey:@"tags"]];
-                NSMutableArray *tagsToAdd = [[NSMutableArray alloc] init];
+
                 for (NSString *bookTag in bookTags) {
-                    //[self.arrayOfTags addObject:bookTag];
-                    NSLog(@"El tag del libro es: %@", bookTag);
-                    if ([self.arrayOfTags count]==0) {
-                        NSLog(@"Añadimos el primer tag");
-                        //[self.arrayOfTags arrayByAddingObject:bookTag];
-                        [tagsToAdd addObject:bookTag];
+                    if (![self.dictionaryOfTags objectForKey:bookTag]) {
+                        
+                        // V1) GUARDAMOS EN UN DICCIONARIO EL NÚMERO DE LIBROS CON LA KEY DEL TAG
+                        /*[self.dictionaryOfTags setObject:[NSNumber numberWithInteger:1]
+                                                  forKey:bookTag];
+                        [self.arrayOfTags addObject:bookTag];*/
+                        //NSLog(@"Añadimos el tag: %@", bookTag);
+                        
+                        
+                        // V2) GUARDAMOS EN UN DICCIONARIO UN ARRAY DE LIBROS CON LA KEY DEL TAG
+                        NSArray *tagBookArray = @[book];
+                        [self.dictionaryOfTags setObject:tagBookArray
+                                                  forKey:bookTag];
+                        [self.arrayOfTags addObject:bookTag];
+                    
+                    
+                    
                     } else {
-                        for (NSString *tagAlreadySaved in self.arrayOfTags) {
-                            NSLog(@"Entramos al for de los salvados, con el tag salvado: %@", tagAlreadySaved);
-                            if (([bookTag caseInsensitiveCompare:tagAlreadySaved])!=NSOrderedSame) {
-                                NSLog(@"Pero no son iguales!!!");
-                                // El tag no existe
-                                [tagsToAdd addObject:bookTag];
-                                break;
-                            } else {
-                                NSLog(@"YA EXISTE!!!");
-                            }
-                        }
+                        // V1) INCREMENTAMOS EN +1 EL CONTADOR DE TAGS.
+                        /*int tempCount = [[self.dictionaryOfTags objectForKey:bookTag] intValue];
+                        tempCount++;
+                        [self.dictionaryOfTags setObject:[NSNumber numberWithInteger:tempCount]
+                                                  forKey:bookTag];*/
+                        
+                        // V2) AÑADIMOS EL LIBRO AL ARRAY DE LIBROS CON LA KEY DEL TAG.
+                        NSMutableArray *arr = [[self.dictionaryOfTags objectForKey:bookTag] mutableCopy];
+                        [arr addObject:book];
+                        [self.dictionaryOfTags setObject:arr
+                                                  forKey:bookTag];
                     }
                 }
-                
-                [self.arrayOfTags addObjectsFromArray:tagsToAdd];
-                NSLog(@"Añadimos %d elementos a arrayOfTags", [tagsToAdd count]);
-                [tagsToAdd removeAllObjects];
-                
-                /* Si aún no se ha creado el NSMutableArray, lo creamos con el primer libro, sino
-                 añadimos el libro al NSMutableArray. */
-                [self.arrayOfBooks addObject:book];
             }
-            NSLog(@"Longitud del arrayOfTags: %d", [self.arrayOfTags count]);
-            NSLog(@"Longitud del arrayOfBooks: %d", [self.arrayOfBooks count]);
         }else{
             // Se ha producido un error al parsear el JSON
             NSLog(@"Error al parsear JSON: %@", error.localizedDescription);
         }
         
-        // Ordenar books
-        //[self.arrayOfBooks sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         
+        
+        // Ordenar books
+        [self.arrayOfBooks sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        NSLog(@"Longitud del arrayOfBooks: %d", [self.arrayOfBooks count]);
+        /*for (AGTBook *eachBook in self.arrayOfBooks) {
+            NSLog(@"Título: %@", eachBook.title);
+        }*/
+        
+        int sumaLibros=0;
         // Ordenar tags
-        //[self.arrayOfTags sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        for (id key in self.dictionaryOfTags) {
+            //sumaLibros+=[[self.dictionaryOfTags objectForKey:key] intValue];
+            sumaLibros+=[[self.dictionaryOfTags objectForKey:key] count];
+            //NSLog(@"El tag: %@ , lo tienen %@ libros", key, [self.dictionaryOfTags objectForKey:key]);
+        }
+        //NSLog(@"Valor sumaLibros: %d", sumaLibros);
+        
+                  
+        //self.arrayOfTags = [self.dictionaryOfTags allValues];
+        [self.arrayOfTags sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        NSLog(@"Longitud del arrayOfTags: %d", [self.arrayOfTags count]);
+
     }
     
     return self;
@@ -104,40 +125,42 @@
 }
 
 
+
+
 -(NSUInteger) booksCount {
     return self.arrayOfBooks.count;
 }
 
 
+// Array inmutable (NSArray) con todas las
+// distintas temáticas (tags) en orden alfabético.
+// No puede bajo ningún concepto haber ninguna repetida.
 -(NSArray *) tags {
-    /* Creamos un NSMutableArray donde iremos almacenando
-     los tags leídos. Recorremos todos los libros del array 'books' y
-     leemos uno a uno todos sus tags. Si el tag leído ya existe
-     en el NSMutableArray, lo descartamos, sino, lo añadimos. De este
-     modo descartamos los repetidos.
-     Hay que ordenar alfabéticamente el NSMutableArray antes de devolverlo.
-     Finalmente convertimos el NSMutableArray en un NSArray para
-     devolerlo como resultado del método.*/
-    NSArray *array = [self.arrayOfTags copy];
     
-    return array;
+    return [self.arrayOfTags copy];
 }
 
 
+// Cantidad de libros que hay en una temática.
+// Si el tag no existe, debe de devolver cero
 -(NSUInteger) bookCountForTag:(NSString*) tag {
-    /* Creamos una variable NSUInteger que inicializaremos
-     a 0, y que contendrá el número de libros que contienen
-     el tag pasado por parámetro.
-     Después, iteramos el NSArray 'books' pasando por cada libro.
-     Leemos uno a uno todos sus tags. Si el tag leído es igual
-     al tag pasado por parámetro, incrementaremos la variable contador.*/
     
-    NSUInteger entero=0;
+    /*if ([[self.dictionaryOfTags objectForKey:tag] integerValue]) {
+        return [[self.dictionaryOfTags objectForKey:tag] integerValue];
+    } else {
+        return 0;
+    }*/
     
-    return entero;
+    return [[self.dictionaryOfTags objectForKey:tag] count];
 }
 
 
+// Array inmutable (NSArray) de los libros
+// (instancias de AGTBook) que hay en
+// una temática.
+// Un libro puede estar en una o más
+// temáticas. Si no hay libros para una
+// temática, ha de devolver nil.
 -(NSArray *) booksForTag: (NSString *) tag {
     /* Creamos un NSMutableArray donde iremos almacenando las
      instancias AGTBook que contengan el tag.
@@ -150,13 +173,21 @@
      devolerlo como resultado del método. Si no hay ningún libro
      que contenga el tag, devolveremos nil.*/
     
-    NSArray *arrayRetorno;
+    NSMutableArray *booksWithTag = [[NSMutableArray alloc] init];
     
-    return arrayRetorno;
+    /*for (AGTBook *each in self.arrayOfBooks) {
+        <#statements#>
+    }*/
+    
+    return [booksWithTag copy];
 }
 
 
-
+// Un AGTBook para el libro que está en la posición
+// 'index' de aquellos bajo un cierto
+// tag. Mira a ver si puedes usar el método anterior
+// para hacer parte de tu trabajo.
+// Si el indice no existe o el tag no existe, ha de devolver nil.
 -(AGTBook *) bookForTag: (NSString *) tag atIndex: (NSUInteger) index {
     /* Obtenemos el array de libros para ese tag llamando al método
      anterior y devolvemos el objeto en la posición index. */
@@ -177,6 +208,7 @@
     
     return elements;
 }
+
 
 
 

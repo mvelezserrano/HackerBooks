@@ -37,4 +37,8 @@
 }
 
 
+-(NSComparisonResult)localizedCaseInsensitiveCompare: (AGTBook*)other {
+    return [self.title localizedCaseInsensitiveCompare: other.title];
+}
+
 @end

@@ -30,5 +30,6 @@
 // Inicializador a partir de un diccionario JSON
 -(id) initWithDictionary: (NSDictionary *) dict;
 
+-(NSComparisonResult)localizedCaseInsensitiveCompare: (AGTBook*)other;
 
 @end
