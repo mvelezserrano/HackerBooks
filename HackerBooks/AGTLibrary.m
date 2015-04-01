@@ -78,7 +78,10 @@
         
         // Ordenar tags
         [self.arrayOfTags sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-
+        
+        // Añadimos tag favorite como el primero de todos.
+        [self.arrayOfTags insertObject:@"Favorites"
+                               atIndex:0];
     }
     
     return self;

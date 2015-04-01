@@ -24,9 +24,6 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    // Obtenemos el JSON en formato NSData, ya sea descargándolo o leyéndolo del directorio Documents.
-    NSData *jsonData = [self getJSONForModel];
-    
     // Valor por defecto para el último libro seleccionado
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
     if (![def objectForKey:LAST_SELECTED_BOOK]) {
@@ -34,10 +31,25 @@
         // guardamos un valor por defecto
         [def setObject:@[@0, @0]
                 forKey:LAST_SELECTED_BOOK];
-        
-        // por si acaso...
         [def synchronize];
     }
+    
+    // Comprobamos si es el primer arranque
+    if (![def boolForKey:FIRST_BOOT]) {
+        NSLog(@"Primer arranque!!!");
+        [def setBool:YES
+                forKey:FIRST_BOOT];
+        [def synchronize];
+    } else {
+        NSLog(@"NO ES el primer arranque!!!");
+        [def setBool:NO
+              forKey:FIRST_BOOT];
+        [def synchronize];
+    }
+    
+    // Obtenemos el JSON en formato NSData, ya sea descargándolo o leyéndolo del directorio Documents.
+    NSData *jsonData = [self getJSONDependingOnBoot: [def boolForKey:FIRST_BOOT]];
+    
     
     // Creamos un modelo de librería
     AGTLibrary *model = [[AGTLibrary alloc] initWithJSON:jsonData];
@@ -65,6 +77,7 @@
     
     /*
     NSLog(@"Prueba método 'booksCount': %d", [model booksCount]);
+    NSLog(@"Número de tags: %d", [[model tags] count]);
     NSLog(@"Prueba método 'tags': %@", [[model tags] componentsJoinedByString:@", "]);
     
     NSLog(@"Prueba método 'bookCountForTag: alrorithms': %d", [model bookCountForTag:@"algorithms"]);
@@ -112,25 +125,19 @@
 
 #pragma marks - Utils
 
--(NSData *) getJSONForModel {
+-(NSData *) getJSONDependingOnBoot: (BOOL) firstBoot {
     NSData *json;
     // Averiguar la url a la carpeta de Documents
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
                                inDomains:NSUserDomainMask];
     NSURL *url = [urls lastObject];
+    
     // Añadir el componente del nombre del fichero
     url = [url URLByAppendingPathComponent:@"books_readable.json"];
     NSError *err = nil;
     
-    // Comprobamos si arrancamos la aplicación por primera vez
-    // Si arrancamos por primera vez....
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (![defaults objectForKey:FIRST_BOOT]) {
-        NSLog(@"Primer arranque!!!");
-        [defaults setObject:@"1" forKey:FIRST_BOOT];
-        [defaults synchronize];
-        
+    if (firstBoot) {
         // Descargamos el JSON y lo guardamos en Documents de mi Sandbox
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://t.co/K9ziV0z3SJ"]];
         NSURLResponse *response = [[NSURLResponse alloc] init];
@@ -139,8 +146,8 @@
                                      returningResponse:&response
                                                  error:&err];
         //NSData *modifiedJson = [self downloadExtrasAndChangeToLocal: json];
-        //if (modifiedJson != nil) {
-        if (json != nil) {
+        
+        if (json != nil) {   //if (modifiedJson != nil) {
             
             BOOL rc = [json writeToURL:url
             //BOOL rc = [modifiedJson writeToURL:url
@@ -153,13 +160,11 @@
                 NSLog(@"Error al guardar: %@", err.localizedDescription);
             }
         } else {
-            
             // Error al descargar los datos del servidor
             NSLog(@"Error al descargar datos del servidor: %@", err.localizedDescription);
         }
     // ... y si no es el primer arranque....
     } else {
-        NSLog(@"NO ES EL Primer arranque!!!");
         // Leemos el JSON del directorio Documents
         json = [NSData dataWithContentsOfURL:url
                                      options:NSDataReadingMappedIfSafe
