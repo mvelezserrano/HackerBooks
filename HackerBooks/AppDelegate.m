@@ -27,21 +27,39 @@
     // Obtenemos el JSON en formato NSData, ya sea descargándolo o leyéndolo del directorio Documents.
     NSData *jsonData = [self getJSONForModel];
     
+    // Valor por defecto para el último libro seleccionado
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    if (![def objectForKey:LAST_SELECTED_BOOK]) {
+        
+        // guardamos un valor por defecto
+        [def setObject:@[@0, @0]
+                forKey:LAST_SELECTED_BOOK];
+        
+        // por si acaso...
+        [def synchronize];
+    }
+    
     // Creamos un modelo de librería
     AGTLibrary *model = [[AGTLibrary alloc] initWithJSON:jsonData];
     
-    //AGTBook *testBook = [model primerLibro];
-    //AGTBook *testBook = [model randomLibro];
     
     // Controladores
-    //AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:testBook];
-    //AGTSimplePDFViewController *pdfVC = [[AGTSimplePDFViewController alloc] initWithModel:testBook];
+    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[self lastSelectedBookInModel: model]];
     AGTLibraryTableViewController *libTableVC = [[AGTLibraryTableViewController alloc] initWithModel:model
                                                                                                style:UITableViewStylePlain];
     
     
     // Combinadores
-    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:libTableVC];
+    UINavigationController *libNav = [[UINavigationController alloc] initWithRootViewController:libTableVC];
+    UINavigationController *bookNav = [[UINavigationController alloc] initWithRootViewController:bookVC];
+    
+    UISplitViewController *splitVC = [[UISplitViewController alloc] init];
+    splitVC.viewControllers = @[libNav, bookNav];
+    
+    
+    // Asignamos delegados
+    libTableVC.delegate = bookVC;
+    splitVC.delegate = bookVC;
     
     // RISTRA DE TESTS!!!
     
@@ -61,7 +79,7 @@
     */
     
     
-    self.window.rootViewController = navVC;
+    self.window.rootViewController = splitVC;
     
     
     self.window.backgroundColor = [UIColor whiteColor];
@@ -255,6 +273,27 @@
                                                      error:&err];
     
     return modifiedJson;
+}
+
+
+-(AGTBook *) lastSelectedBookInModel: (AGTLibrary *) library{
+    
+    // Obtengo el NSUserDefaults
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    
+    // Saco las coordenadas del último libro seleccionado
+    NSArray *coords = [def objectForKey:LAST_SELECTED_BOOK];
+    NSUInteger section = [[coords objectAtIndex:0] integerValue];
+    NSUInteger pos = [[coords objectAtIndex:1] integerValue];
+    
+    
+    // Obtengo el libro
+    AGTBook *book = [library bookForTag:[[library tags] objectAtIndex:section]
+                                atIndex:pos];
+    
+    // Lo devuelvo
+    return book;
+    
 }
 
 @end

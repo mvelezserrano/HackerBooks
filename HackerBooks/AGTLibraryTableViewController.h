@@ -6,12 +6,27 @@
 //  Copyright (c) 2015 Mixi. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-@class AGTLibrary;
+#define BOOK_DID_CHANGE_NOTIFICATION_NAME @"bookDidChangeNotification"
+#define BOOK_KEY @"bookKey"
 
-@interface AGTLibraryTableViewController : UITableViewController
+#import <UIKit/UIKit.h>
+@class AGTBook;
+@class AGTLibrary;
+@class AGTLibraryTableViewController;
+
+@protocol AGTLibraryTableViewControllerDelegate <NSObject>
+
+@optional
+
+- (void) libraryTableViewController: (AGTLibraryTableViewController *) libVC
+                      didSelectBook: (AGTBook *) book;
+
+@end
+
+@interface AGTLibraryTableViewController : UITableViewController <AGTLibraryTableViewControllerDelegate>
 
 @property (strong, nonatomic) AGTLibrary *model;
+@property (weak, nonatomic) id<AGTLibraryTableViewControllerDelegate> delegate;
 
 - (id) initWithModel: (AGTLibrary *) model
                style: (UITableViewStyle) style;

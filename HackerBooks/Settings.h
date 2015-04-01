@@ -7,3 +7,4 @@
 //
 
 #define FIRST_BOOT @"firstBoot"
+#define LAST_SELECTED_BOOK @"lastBook"

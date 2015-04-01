@@ -10,6 +10,7 @@
 #import "AGTBook.h"
 #import "AGTLibrary.h"
 #import "AGTBookViewController.h"
+#import "Settings.h"
 
 @interface AGTLibraryTableViewController ()
 
@@ -105,17 +106,69 @@
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    
     // Averiguar de qué libro me están hablando.
     AGTBook *book = [self.model bookForTag:[[self.model tags] objectAtIndex:indexPath.section]
                                    atIndex:indexPath.row];
     
+    // ANTES DEL SPLITVIEWCONTROLLER .....
+    /*
     // Crear el controlador del libro
     AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:book];
     
     // Hacemos push del controller
     [self.navigationController pushViewController:bookVC
                                          animated:YES];
+    */
     
+    // DESPUÉS DEL SPLITVIEWCONTROLLER .....
+    
+    // Avisar al delegado (siempre y cuando entienda el mensaje).
+    if ([self.delegate respondsToSelector:@selector(libraryTableViewController:didSelectBook:)]) {
+        // Si que lo entiende, lo mandamos...
+        [self.delegate libraryTableViewController:self
+                                didSelectBook:book];
+    }
+    
+    
+    // Mandamos una notificación
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    NSDictionary *dict = @{BOOK_KEY : book};
+    
+    NSNotification *n = [NSNotification notificationWithName:BOOK_DID_CHANGE_NOTIFICATION_NAME
+                                                      object:self
+                                                    userInfo:dict];
+    [nc postNotification:n];
+    
+    
+    // Guardamos las coordenadas del último libro seleccionado
+    NSArray *coords = @[@(indexPath.section), @(indexPath.row)];
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    [def setObject:coords
+            forKey:LAST_SELECTED_BOOK];
+    [def synchronize];
+    
+    
+    
+    
+    
+    
+    
+}
+
+
+#pragma mark - AGTUniverseTableViewControllerDelegate
+
+- (void) libraryTableViewController: (AGTLibraryTableViewController *) libVC
+                      didSelectBook: (AGTBook *) book {
+    
+    // Creamos un AGTBookViewController
+    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:book];
+    
+    // Hago un push
+    [self.navigationController pushViewController:bookVC
+                                         animated:YES];
 }
 
 @end
