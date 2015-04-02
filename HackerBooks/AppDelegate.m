@@ -29,7 +29,7 @@
     if (![def objectForKey:LAST_SELECTED_BOOK]) {
         
         // guardamos un valor por defecto
-        [def setObject:@[@0, @0]
+        [def setObject:@[@1, @0]
                 forKey:LAST_SELECTED_BOOK];
         [def synchronize];
     }
@@ -147,10 +147,11 @@
                                                  error:&err];
         //NSData *modifiedJson = [self downloadExtrasAndChangeToLocal: json];
         
-        if (json != nil) {   //if (modifiedJson != nil) {
+        //if (modifiedJson != nil) {
+        if (json != nil) {
             
-            BOOL rc = [json writeToURL:url
             //BOOL rc = [modifiedJson writeToURL:url
+            BOOL rc = [json writeToURL:url
                                options:NSDataWritingAtomic
                                  error:&err];
             
@@ -191,7 +192,7 @@
     
     // Averiguar la url a la carpeta de Application Support.
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory//NSApplicationSupportDirectory
+    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
                                inDomains:NSUserDomainMask];
     NSURL *url = [urls lastObject];
     

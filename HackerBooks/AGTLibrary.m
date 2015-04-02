@@ -44,7 +44,15 @@
         if (JSONObjects != nil) {
             // No ha habido error
             for(NSDictionary *dict in JSONObjects){
-                AGTBook *book = [[AGTBook alloc] initWithDictionary:dict];
+                //AGTBook *book = [[AGTBook alloc] initWithDictionary:dict];
+                
+                AGTBook *book = [[AGTBook alloc] initWithTitle:[dict objectForKey:@"title"]
+                                                       authors:[dict objectForKey:@"authors"]
+                                                          tags:[dict objectForKey:@"tags"]
+                                                      imageURL:[dict objectForKey:@"image_url"]
+                                                      //imageURL:[self downloadImageAndChangeURL:[dict objectForKey:@"image_url"]]
+                                                        pdfURL:[dict objectForKey:@"pdf_url"]];
+                
                 [self.arrayOfBooks addObject:book];
                 
                 NSArray *bookTags = [self createArrayFromJSONMultipleString:[dict objectForKey:@"tags"]];
@@ -85,6 +93,54 @@
     }
     
     return self;
+}
+
+- (NSString *) downloadImageAndChangeURL: (NSString *) imageURL {
+    
+    NSError *err = nil;
+    
+    // Averiguar la url a la carpeta Documents.
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
+                               inDomains:NSUserDomainMask];
+    NSURL *url = [urls lastObject];
+    
+    // 0) Copiamos el NSDictionary en un NSMutableDictionary
+    //NSMutableDictionary *mutDict = [[NSMutableDictionary alloc] init];
+    
+    // 1)Accedemos al componente urlPortada, la descargamos y modificamos la url del json por la local
+    
+    // 1.1) Descargamos la imagen del libro en un NSData.
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
+    NSURLResponse *response = [[NSURLResponse alloc] init];
+    NSData *downloadedData = [NSURLConnection sendSynchronousRequest:request
+                                                   returningResponse:&response
+                                                               error:&err];
+    
+    // 1.2) Añadir el componente del nombre del fichero
+    url = [url URLByAppendingPathComponent:[imageURL lastPathComponent]];
+    
+    NSLog(@"local_image_url: %@", url);
+    
+    // 1.3) Guardamos la imagen en la carpeta y comprobamos que no devuelve error.
+    BOOL rc = [downloadedData writeToURL:url
+                                 options:NSDataWritingAtomic
+                                   error:&err];
+    if (rc == NO) {
+        // Error!
+        NSLog(@"Error al guardar la imagen descargada: %@", err.localizedDescription);
+    }
+    
+    // 1.4) Actualizamos la url de la imagen en el JSON por la url local de la imagen.
+    /*[mutDict setObject:[NSString stringWithContentsOfURL:url
+                                                encoding:NSUTF8StringEncoding
+                                                   error:&err] forKey:@"image_url"];
+    */
+    
+    
+    return [NSString stringWithContentsOfURL:url
+                                    encoding:NSUTF8StringEncoding
+                                       error:&err];
 }
 
 
