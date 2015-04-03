@@ -40,6 +40,7 @@
         NSFileManager *fm = [NSFileManager defaultManager];
         NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
                                    inDomains:NSUserDomainMask];
+        //NSArray *urls = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO);
         NSURL *documentsUrl = [urls lastObject];
         
         
@@ -66,15 +67,17 @@
                     NSLog(@"Error al guardar la imagen descargada: %@", err.localizedDescription);
                 }
                 */
-                 
-                NSLog(@"url de la imagen descargada: %@", [NSURL URLWithString:[dict objectForKey:@"image_url"]]);
+                
+                NSLog(@"urlRemontada: %@", [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]]);
+                
+                NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
                 
                  
                 AGTBook *book = [[AGTBook alloc] initWithTitle:[dict objectForKey:@"title"]
                                                        authors:[dict objectForKey:@"authors"]
                                                           tags:[dict objectForKey:@"tags"]
-                                                      //imageURL: imageLocalUrl
-                                                      imageURL:[NSURL URLWithString:[dict objectForKey:@"image_url"]]
+                                                      imageURL:imageLocalUrl
+                                                      //imageURL:[dict objectForKey:@"image_url"]
                                                         pdfURL:[dict objectForKey:@"pdf_url"]];
                 self.contadorLibros+=1;
                 

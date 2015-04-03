@@ -42,8 +42,8 @@
         [def synchronize];
     } else {
         NSLog(@"NO ES el primer arranque!!!");
-        [def setBool:YES    // --> PARA QUE SIEMPRE SEA EL PRIMER ARRANQUE!!!!!!
-        //[def setBool:NO
+        //[def setBool:YES    // --> PARA QUE SIEMPRE SEA EL PRIMER ARRANQUE!!!!!!
+        [def setBool:NO
               forKey:FIRST_BOOT];
         [def synchronize];
     }
@@ -205,7 +205,7 @@
         for(NSDictionary *dict in JSONArray){
             
             // 0) Copiamos el NSDictionary en un NSMutableDictionary
-            NSMutableDictionary *mutDict = [[NSMutableDictionary alloc] initWithDictionary:dict];
+            NSMutableDictionary *mutDict = [dict mutableCopy];
             
             // 1)Accedemos al componente urlPortada, la descargamos y modificamos la url del json por la local
             
@@ -217,7 +217,10 @@
             // 1.2) Añadir el componente del nombre del fichero
             NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
             
-            //NSLog(@"url de la imagen local: %@", imageLocalUrl);
+            //NSLog(@"relativePath de la imagen local: %@", [imageLocalUrl relativePath]);
+            //NSLog(@"absoluteString de la imagen local: %@", [imageLocalUrl absoluteString]);
+            //NSLog(@"path de la imagen local: %@", [imageLocalUrl path]);
+            
             
             
             // 1.3) Guardamos la imagen en la carpeta y comprobamos que no devuelve error.
@@ -231,10 +234,8 @@
             
             
             // 1.4) Actualizamos la url de la imagen en el JSON por la url local de la imagen.
-            /*[mutDict setObject:[NSString stringWithContentsOfURL:imageLocalUrl
-                                                        encoding:NSUTF8StringEncoding
-                                                           error:nil] forKey:@"image_url"];*/
-            [mutDict setObject:[imageLocalUrl path] forKey:@"image_url"];
+            [mutDict setObject:[imageLocalUrl absoluteString] forKey:@"image_url"];
+            //[mutDict setObject:[imageLocalUrl relativePath] forKey:@"image_url"];
             
             //NSLog(@"url de la imagen descargada: %@", [mutDict objectForKey:@"image_url"]);
             
@@ -251,9 +252,13 @@
                                                    options:kNilOptions
                                                      error:&err];
     
+    NSLog(@"Llegamos aquí...");
+    
+    
     if (modifiedJson == nil) {
         NSLog(@"Error al crear el modifiedJson: %@", err.localizedDescription);
     }
+    
     
     return modifiedJson;
 }
