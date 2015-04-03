@@ -42,7 +42,8 @@
         [def synchronize];
     } else {
         NSLog(@"NO ES el primer arranque!!!");
-        [def setBool:NO
+        [def setBool:YES    // --> PARA QUE SIEMPRE SEA EL PRIMER ARRANQUE!!!!!!
+        //[def setBool:NO
               forKey:FIRST_BOOT];
         [def synchronize];
     }
@@ -138,6 +139,7 @@
     NSError *err = nil;
     
     if (firstBoot) {
+        NSLog(@"Descargamos y leemos el json");
         // Descargamos el JSON y lo guardamos en Documents de mi Sandbox
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://t.co/K9ziV0z3SJ"]];
         NSURLResponse *response = [[NSURLResponse alloc] init];
@@ -145,12 +147,10 @@
         json = [NSURLConnection sendSynchronousRequest:request
                                      returningResponse:&response
                                                  error:&err];
-        //NSData *modifiedJson = [self downloadExtrasAndChangeToLocal: json];
+        json = [self downloadExtrasAndChangeToLocal: json];
         
-        //if (modifiedJson != nil) {
         if (json != nil) {
             
-            //BOOL rc = [modifiedJson writeToURL:url
             BOOL rc = [json writeToURL:url
                                options:NSDataWritingAtomic
                                  error:&err];
@@ -167,6 +167,7 @@
     // ... y si no es el primer arranque....
     } else {
         // Leemos el JSON del directorio Documents
+        NSLog(@"Leemos el json del directorio Documents");
         json = [NSData dataWithContentsOfURL:url
                                      options:NSDataReadingMappedIfSafe
                                        error:&err];
@@ -182,23 +183,26 @@
 
 
 -(NSData *) downloadExtrasAndChangeToLocal: (NSData *) json {
+    NSLog(@"Entramos en downloadExtrasAndChangeToLocal método");
     NSError *err = nil;
     NSData  *modifiedJson;
-    NSArray *JSONObjects = [NSJSONSerialization JSONObjectWithData:json
+    NSArray *JSONArray = [NSJSONSerialization JSONObjectWithData:json
                                                             options:kNilOptions
                                                               error:&err];
     
-    NSMutableArray *modifiedJSONObjects = [[NSMutableArray alloc] initWithCapacity:[JSONObjects count]];
+    NSMutableArray *modifiedJSONArray = [[NSMutableArray  alloc] init];
+    //NSMutableArray *modifiedJSONArray = [NSMutableArray arrayWithArray:JSONArray];
     
-    // Averiguar la url a la carpeta de Application Support.
+    // Averiguar la url a la carpeta Documents.
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
                                inDomains:NSUserDomainMask];
-    NSURL *url = [urls lastObject];
+    NSURL *documentsUrl = [urls lastObject];
+    //NSLog(@"url antes de entrar en el bucle del dict: %@", documentsUrl);
     
-    if (JSONObjects != nil) {
+    if (JSONArray != nil) {
         // Para cada libro ....
-        for(NSDictionary *dict in JSONObjects){
+        for(NSDictionary *dict in JSONArray){
             
             // 0) Copiamos el NSDictionary en un NSMutableDictionary
             NSMutableDictionary *mutDict = [[NSMutableDictionary alloc] initWithDictionary:dict];
@@ -206,67 +210,36 @@
             // 1)Accedemos al componente urlPortada, la descargamos y modificamos la url del json por la local
             
             // 1.1) Descargamos la imagen del libro en un NSData.
-            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[dict objectForKey:@"image_url"]]];
-            NSURLResponse *response = [[NSURLResponse alloc] init];
-            NSData *downloadedData = [NSURLConnection sendSynchronousRequest:request
-                                         returningResponse:&response
-                                                     error:&err];
+            NSData *downloadedImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[dict objectForKey:@"image_url"]]
+                                                                options:kNilOptions
+                                                                  error:&err];
             
             // 1.2) Añadir el componente del nombre del fichero
-            url = [url URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
+            NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
             
-            NSLog(@"local_image_url: %@", url);
+            //NSLog(@"url de la imagen local: %@", imageLocalUrl);
+            
             
             // 1.3) Guardamos la imagen en la carpeta y comprobamos que no devuelve error.
-            BOOL rc = [downloadedData writeToURL:url
-                                       options:NSDataWritingAtomic
-                                         error:&err];
+            BOOL rc = [downloadedImageData writeToURL:imageLocalUrl
+                                              options:NSDataWritingAtomic
+                                                error:&err];
             if (rc == NO) {
                 // Error!
                 NSLog(@"Error al guardar la imagen descargada: %@", err.localizedDescription);
             }
             
+            
             // 1.4) Actualizamos la url de la imagen en el JSON por la url local de la imagen.
-            [mutDict setObject:[NSString stringWithContentsOfURL:url
+            /*[mutDict setObject:[NSString stringWithContentsOfURL:imageLocalUrl
                                                         encoding:NSUTF8StringEncoding
-                                                           error:&err] forKey:@"image_url"];
+                                                           error:nil] forKey:@"image_url"];*/
+            [mutDict setObject:[imageLocalUrl path] forKey:@"image_url"];
             
-            NSLog(@"local_image_url: %@", url);
+            //NSLog(@"url de la imagen descargada: %@", [mutDict objectForKey:@"image_url"]);
             
-            
-            /* DESCARGAREMOS EL PDF CUANDO ACCEDAMOS A LA LISTA DE LECTURA DEL PDF
-             
-            // 2) Accedemos al componente urlPDF, la descargamos y modificamos la url del json por la local
-            
-            // 2.1) Descargamos la imagen del libro en un NSData.
-            request = [NSURLRequest requestWithURL:[NSURL URLWithString:[dict objectForKey:@"pdf_url"]]];
-            response = [[NSURLResponse alloc] init];
-            downloadedData = [NSURLConnection sendSynchronousRequest:request
-                                                            returningResponse:&response
-                                                                        error:&err];
-            
-            // 2.2) Añadir el componente del nombre del fichero
-            url = [url URLByAppendingPathComponent:[[dict objectForKey:@"pdf_url"]lastPathComponent]];
-            
-            // 2.3) Guardamos la imagen en la carpeta y comprobamos que no devuelve error.
-            rc = [downloadedData writeToURL:url
-                                    options:NSDataWritingAtomic
-                                      error:&err];
-            if (rc == NO) {
-                // Error!
-                NSLog(@"Error al guardar el pdf descargado: %@", err.localizedDescription);
-            }
-            
-            // 1.4) Actualizamos la url del pdf en el JSON por la url local.
-            [mutDict setObject:[NSString stringWithContentsOfURL:url
-                                                        encoding:NSUTF8StringEncoding
-                                                           error:&err] forKey:@"pdf_url"];
-            
-            NSLog(@"local_pdf_url: %@", url);
-            */
-            
-            // 3) Añadimos el diccionario modificado al NSMutableArray
-            [modifiedJSONObjects addObject:mutDict];
+            // 2) Añadimos el diccionario modificado al NSMutableArray
+            [modifiedJSONArray addObject:mutDict];
         }
     }else{
         // Se ha producido un error al parsear el JSON
@@ -274,9 +247,13 @@
     }
     
     // Convertir el NSMutableDictionary en JSON
-    modifiedJson = [NSJSONSerialization dataWithJSONObject:modifiedJSONObjects
-                                                   options:NSJSONWritingPrettyPrinted
+    modifiedJson = [NSJSONSerialization dataWithJSONObject:[NSArray arrayWithArray: modifiedJSONArray]
+                                                   options:kNilOptions
                                                      error:&err];
+    
+    if (modifiedJson == nil) {
+        NSLog(@"Error al crear el modifiedJson: %@", err.localizedDescription);
+    }
     
     return modifiedJson;
 }

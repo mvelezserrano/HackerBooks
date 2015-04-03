@@ -86,7 +86,7 @@
 
     
     // Sincronizar modelo (libro) --> vista (celda)
-    cell.imageView.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:[NSURL URLWithString: book.imageURL]]];
+    cell.imageView.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:book.imageURL]];
     cell.textLabel.text = book.title;
     cell.detailTextLabel.text = book.authors;
     

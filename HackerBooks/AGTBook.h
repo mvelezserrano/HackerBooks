@@ -13,7 +13,7 @@
 @property (copy, nonatomic) NSString *title;
 @property (copy, nonatomic) NSString *authors;
 @property (copy, nonatomic) NSString *tags;
-@property (copy, nonatomic) NSString *imageURL;
+@property (copy, nonatomic) NSURL *imageURL;
 @property (copy, nonatomic) NSString *pdfURL;
 
 @property (nonatomic) BOOL isFavorite;
@@ -23,12 +23,14 @@
 -(id) initWithTitle: (NSString *) title
             authors: (NSString *) authors
                tags: (NSString *) tags
-           imageURL: (NSString *) imageURL
+           imageURL: (NSURL *) imageURL
              pdfURL: (NSString *) pdfURL;
 
 
 // Inicializador a partir de un diccionario JSON
 -(id) initWithDictionary: (NSDictionary *) dict;
+
+-(NSDictionary *) asJSONDictionary;
 
 -(NSComparisonResult)localizedCaseInsensitiveCompare: (AGTBook*)other;
 

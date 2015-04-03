@@ -15,6 +15,9 @@
 @property (strong, nonatomic) NSMutableArray *arrayOfTags;
 
 @property (strong, nonatomic) NSMutableDictionary *dictionaryOfTags;
+@property (strong, nonatomic) NSMutableArray *arrayOfUpdatedBookDicts;
+
+@property (nonatomic) int contadorLibros;
 
 @end
 
@@ -28,30 +31,52 @@
         self.arrayOfTags = [[NSMutableArray alloc] init];
         self.dictionaryOfTags = [[NSMutableDictionary alloc] init];
         
-        NSError *error;
-        
-        /*if ([[NSJSONSerialization JSONObjectWithData:json
-                                             options:kNilOptions
-                                               error:&error] isKindOfClass:[NSArray class]]) {
-            //NSLog(@"Es un NSArray!");
-        } else {
-            //NSLog(@"Es un NSDictionary!");
-        }*/
+        NSError *err;
         
         NSArray * JSONObjects = [NSJSONSerialization JSONObjectWithData:json
                                                                 options:kNilOptions
-                                                                  error:&error];
+                                                                  error:&err];
+        // Averiguar la url a la carpeta de Application Support.
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
+                                   inDomains:NSUserDomainMask];
+        NSURL *documentsUrl = [urls lastObject];
+        
+        
         if (JSONObjects != nil) {
             // No ha habido error
             for(NSDictionary *dict in JSONObjects){
                 //AGTBook *book = [[AGTBook alloc] initWithDictionary:dict];
                 
+                /*
+                // Create an NSData object from the contents of the given URL.
+                NSData *downloadedImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[dict objectForKey:@"image_url"]]
+                                                               options:kNilOptions
+                                                                 error:&err];
+                
+                // 1.2) Añadir el componente del nombre del fichero
+                NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
+                
+                // 1.3) Guardamos la imagen en la carpeta y comprobamos que no devuelve error.
+                BOOL rc = [downloadedImageData writeToURL:imageLocalUrl
+                                                  options:NSDataWritingAtomic
+                                                    error:&err];
+                if (rc == NO) {
+                    // Error!
+                    NSLog(@"Error al guardar la imagen descargada: %@", err.localizedDescription);
+                }
+                */
+                 
+                NSLog(@"url de la imagen descargada: %@", [NSURL URLWithString:[dict objectForKey:@"image_url"]]);
+                
+                 
                 AGTBook *book = [[AGTBook alloc] initWithTitle:[dict objectForKey:@"title"]
                                                        authors:[dict objectForKey:@"authors"]
                                                           tags:[dict objectForKey:@"tags"]
-                                                      imageURL:[dict objectForKey:@"image_url"]
-                                                      //imageURL:[self downloadImageAndChangeURL:[dict objectForKey:@"image_url"]]
+                                                      //imageURL: imageLocalUrl
+                                                      imageURL:[NSURL URLWithString:[dict objectForKey:@"image_url"]]
                                                         pdfURL:[dict objectForKey:@"pdf_url"]];
+                self.contadorLibros+=1;
                 
                 [self.arrayOfBooks addObject:book];
                 
@@ -75,10 +100,17 @@
                                                   forKey:bookTag];
                     }
                 }
+                
+                /*
+                NSDictionary *dictBook = [book asJSONDictionary];
+                NSLog(@"url de la imagen descargada: %@", [dictBook objectForKey:@"image_url"]);
+                
+                [self.arrayOfUpdatedBookDicts addObject:dictBook];
+                */
             }
         }else{
             // Se ha producido un error al parsear el JSON
-            NSLog(@"Error al parsear JSON: %@", error.localizedDescription);
+            NSLog(@"Error al parsear JSON: %@", err.localizedDescription);
         }
         
         // Ordenar books
@@ -90,57 +122,13 @@
         // Añadimos tag favorite como el primero de todos.
         [self.arrayOfTags insertObject:@"Favorites"
                                atIndex:0];
+        
+        //[self updateLocalJSONWithArray: [NSArray arrayWithArray:self.arrayOfUpdatedBookDicts]];
     }
+    
+    NSLog(@"Total de libros: %d", self.contadorLibros);
     
     return self;
-}
-
-- (NSString *) downloadImageAndChangeURL: (NSString *) imageURL {
-    
-    NSError *err = nil;
-    
-    // Averiguar la url a la carpeta Documents.
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
-                               inDomains:NSUserDomainMask];
-    NSURL *url = [urls lastObject];
-    
-    // 0) Copiamos el NSDictionary en un NSMutableDictionary
-    //NSMutableDictionary *mutDict = [[NSMutableDictionary alloc] init];
-    
-    // 1)Accedemos al componente urlPortada, la descargamos y modificamos la url del json por la local
-    
-    // 1.1) Descargamos la imagen del libro en un NSData.
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
-    NSURLResponse *response = [[NSURLResponse alloc] init];
-    NSData *downloadedData = [NSURLConnection sendSynchronousRequest:request
-                                                   returningResponse:&response
-                                                               error:&err];
-    
-    // 1.2) Añadir el componente del nombre del fichero
-    url = [url URLByAppendingPathComponent:[imageURL lastPathComponent]];
-    
-    NSLog(@"local_image_url: %@", url);
-    
-    // 1.3) Guardamos la imagen en la carpeta y comprobamos que no devuelve error.
-    BOOL rc = [downloadedData writeToURL:url
-                                 options:NSDataWritingAtomic
-                                   error:&err];
-    if (rc == NO) {
-        // Error!
-        NSLog(@"Error al guardar la imagen descargada: %@", err.localizedDescription);
-    }
-    
-    // 1.4) Actualizamos la url de la imagen en el JSON por la url local de la imagen.
-    /*[mutDict setObject:[NSString stringWithContentsOfURL:url
-                                                encoding:NSUTF8StringEncoding
-                                                   error:&err] forKey:@"image_url"];
-    */
-    
-    
-    return [NSString stringWithContentsOfURL:url
-                                    encoding:NSUTF8StringEncoding
-                                       error:&err];
 }
 
 
@@ -151,7 +139,6 @@
 -(AGTBook *) randomLibro {
     return [self.arrayOfBooks objectAtIndex:arc4random() % [self.arrayOfBooks count]];
 }
-
 
 
 -(NSUInteger) booksCount {
@@ -220,6 +207,44 @@
     return elements;
 }
 
+
+-(NSArray *) asJSONArray {
+    
+    return [self.arrayOfUpdatedBookDicts copy];
+}
+
+-(void) updateLocalJSONWithArray: (NSArray *) arrayOfUpdatedBookDicts {
+    
+    // Averiguar la url a la carpeta de Documents
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
+                               inDomains:NSUserDomainMask];
+    NSURL *url = [urls lastObject];
+    
+    // Añadir el componente del nombre del fichero
+    url = [url URLByAppendingPathComponent:@"books_readable.json"];
+    
+    NSError *err;
+    NSData *updatedJSON = [NSJSONSerialization dataWithJSONObject:arrayOfUpdatedBookDicts
+                                                          options:kNilOptions
+                                                            error:&err];
+    
+    if (updatedJSON != nil) {
+        BOOL rc = [updatedJSON writeToURL:url
+                                  options:NSDataWritingAtomic
+                                    error:&err];
+        
+        // Comprobar que se guardó
+        if (rc == NO) {
+            // Error!
+            NSLog(@"Error al guardar: %@", err.localizedDescription);
+        }
+    } else {
+        NSLog(@"Error al crear el updatedJSON: %@", err.localizedDescription);
+    }
+    
+    
+}
 
 
 

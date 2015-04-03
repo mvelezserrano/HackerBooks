@@ -50,7 +50,7 @@
 - (void) syncViewToModel {
     
     self.title = self.model.title;
-    self.bookImage.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:[NSURL URLWithString: self.model.imageURL]]];
+    self.bookImage.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:self.model.imageURL]];
     self.bookTitle.text = self.model.title;
     self.bookAuthors.text = self.model.authors;
     self.bookTags.text = self.model.tags;

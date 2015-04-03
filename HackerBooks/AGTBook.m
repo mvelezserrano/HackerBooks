@@ -13,7 +13,7 @@
 -(id) initWithTitle: (NSString *) title
             authors: (NSString *) authors
                tags: (NSString *) tags
-           imageURL: (NSString *) imageURL
+           imageURL: (NSURL *) imageURL
              pdfURL: (NSString *) pdfURL{
     
     if (self = [super init]) {
@@ -35,6 +35,17 @@
                       imageURL:[dict objectForKey:@"image_url"]
                         pdfURL:[dict objectForKey:@"pdf_url"]];
 }
+
+
+-(NSDictionary *) asJSONDictionary {
+    
+    return @{@"title"      : self.title,
+             @"authors"    : self.authors,
+             @"tags"       : self.tags,
+             @"image_url"  : [self.imageURL path],
+             @"pdf_url"    : self.pdfURL};
+}
+
 
 
 -(NSComparisonResult)localizedCaseInsensitiveCompare: (AGTBook*)other {
