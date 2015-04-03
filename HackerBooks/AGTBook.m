@@ -14,7 +14,8 @@
             authors: (NSString *) authors
                tags: (NSString *) tags
            imageURL: (NSURL *) imageURL
-             pdfURL: (NSString *) pdfURL{
+             pdfURL: (NSString *) pdfURL
+           favorite: (BOOL) isFavorite {
     
     if (self = [super init]) {
         _title = title;
@@ -22,7 +23,7 @@
         _tags = tags;
         _imageURL = imageURL;
         _pdfURL = pdfURL;
-        
+        _isFavorite = isFavorite;
     }
     
     return self;
@@ -33,7 +34,8 @@
                        authors:[dict objectForKey:@"authors"]
                           tags:[dict objectForKey:@"tags"]
                       imageURL:[dict objectForKey:@"image_url"]
-                        pdfURL:[dict objectForKey:@"pdf_url"]];
+                        pdfURL:[dict objectForKey:@"pdf_url"]
+                      favorite: NO];
 }
 
 

@@ -8,3 +8,4 @@
 
 #define FIRST_BOOT @"firstBoot"
 #define LAST_SELECTED_BOOK @"lastBook"
+#define FAVORITES_DICTIONARY @"favoritesDictionary"

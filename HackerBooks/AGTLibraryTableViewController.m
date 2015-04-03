@@ -179,7 +179,7 @@
 // BOOK_FAVORITE_NOTIFICATION_NAME     --> Para saber los métodos que reciben esta notificación.
 - (void) notifyThatFavoriteChange:(NSNotification *) notification {
     
-    NSLog(@"Tabla notificada del cambio de favorito");
+    //NSLog(@"Tabla notificada del cambio de favorito");
     
     // Sacamos el libro cambiado
     AGTBook *book = [notification.userInfo objectForKey:BOOK_KEY];

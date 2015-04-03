@@ -8,6 +8,7 @@
 
 #import "AGTLibrary.h"
 #import "AGTBook.h"
+#import "Settings.h"
 
 @interface AGTLibrary()
 
@@ -40,24 +41,41 @@
                                    inDomains:NSUserDomainMask];
         NSURL *documentsUrl = [urls lastObject];
         
+        // Obtener el diccionario con los favoritos en el nsuserdefaults.
+        NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+        NSDictionary *favorites = [def objectForKey:FAVORITES_DICTIONARY];
+        
         
         if (JSONObjects != nil) {
             // No ha habido error
             for(NSDictionary *dict in JSONObjects){
                 
+                // Obtenemos la url local de la carátula del libro ya descargada.
                 NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
                 
+                // Mirar si es favorito o no.
+                BOOL favorite = NO;
+                if ([favorites objectForKey:[dict objectForKey:@"title"]]) {
+                    favorite = [[favorites objectForKey:[dict objectForKey:@"title"]] boolValue];
+                }
+                
+                // Creamos el AGTBook.
                 AGTBook *book = [[AGTBook alloc] initWithTitle:[dict objectForKey:@"title"]
                                                        authors:[dict objectForKey:@"authors"]
                                                           tags:[dict objectForKey:@"tags"]
                                                       imageURL:imageLocalUrl
-                                                        pdfURL:[dict objectForKey:@"pdf_url"]];
+                                                        pdfURL:[dict objectForKey:@"pdf_url"]
+                                                      favorite:favorite];
+                
                 
                 // Añadimos el libro al NSMutableArray de libros 'arrayOfBooks'
                 [self.arrayOfBooks addObject:book];
                 
                 // Convierto el string de tags en un array.
-                NSArray *bookTags = [self createArrayFromJSONMultipleString:[dict objectForKey:@"tags"]];
+                NSMutableArray *bookTags = [self createArrayFromJSONMultipleString:[dict objectForKey:@"tags"]];
+                if (book.isFavorite) {
+                    [bookTags addObject:@"Favorites"];
+                }
                 
                 // Para cada tag del libro que estamos tratando...
                 for (NSString *bookTag in bookTags) {
@@ -106,17 +124,20 @@
         // Ordenamos alfabéticamente los libros...
         [self.arrayOfBooks sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         
+        // Eliminamos el tag 'Favorites' ....
+        [self.arrayOfTags removeObject:@"Favorites"];
+        
         // Ordenamos alfabéticamente los tags...
         [self.arrayOfTags sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         
-        // Añadimos tag favorite como el primero de todos los tags.
+        // ... para añadirlo de nuevo como el primero de todos.
         [self.arrayOfTags insertObject:@"Favorites" atIndex:0];
         
-        // Añadimos el tag 'Favorite' al dictionaryOfTags.
-        [self.dictionaryOfTags setObject:[[NSArray alloc] init] forKey:@"Favorites"];
         
-        // Por último, actualizamos el json local con las nuevas url de las imágenes.
-        [self updateLocalJSONWithArray: [NSArray arrayWithArray:self.arrayOfUpdatedBookDicts]];
+        // Añadimos el tag 'Favorite' al dictionaryOfTags en caso de que aún no exista.
+        if (![self.dictionaryOfTags objectForKey:@"Favorites"]) {
+            [self.dictionaryOfTags setObject:[[NSArray alloc] init] forKey:@"Favorites"];
+        }
     }
 
     return self;
@@ -191,9 +212,9 @@
 
 #pragma mark - Utils
 
--(NSArray*) createArrayFromJSONMultipleString: (NSString *)JSONMultipleString{
+-(NSMutableArray*) createArrayFromJSONMultipleString: (NSString *)JSONMultipleString{
     
-    NSArray *elements = [JSONMultipleString componentsSeparatedByString:@", "];
+    NSMutableArray *elements = [[JSONMultipleString componentsSeparatedByString:@", "] mutableCopy];
     
     return elements;
 }
@@ -202,37 +223,6 @@
 -(NSArray *) asJSONArray {
     
     return [self.arrayOfUpdatedBookDicts copy];
-}
-
--(void) updateLocalJSONWithArray: (NSArray *) arrayOfUpdatedBookDicts {
-    
-    // Averiguar la url a la carpeta de Documents
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
-                               inDomains:NSUserDomainMask];
-    NSURL *url = [urls lastObject];
-    
-    // Añadir el componente del nombre del fichero
-    url = [url URLByAppendingPathComponent:@"books_readable.json"];
-    
-    NSError *err;
-    NSData *updatedJSON = [NSJSONSerialization dataWithJSONObject:arrayOfUpdatedBookDicts
-                                                          options:kNilOptions
-                                                            error:&err];
-    
-    if (updatedJSON != nil) {
-        BOOL rc = [updatedJSON writeToURL:url
-                                  options:NSDataWritingAtomic
-                                    error:&err];
-        
-        // Comprobar que se guardó
-        if (rc == NO) {
-            // Error!
-            NSLog(@"Error al guardar: %@", err.localizedDescription);
-        }
-    } else {
-        NSLog(@"Error al crear el updatedJSON: %@", err.localizedDescription);
-    }
 }
 
 
@@ -245,11 +235,23 @@
     // Si el libro estaba como favorito, lo quitamos, sino, lo añadimos.
     if (aBook.isFavorite) {
         [arr addObject:aBook];
-        NSLog(@"El libro NO era favorito y lo añadimos...");
+        //NSLog(@"El libro NO era favorito y lo añadimos...");
     } else {
         [arr removeObject:aBook];
-        NSLog(@"El libro era favorito y lo quitamos...");
+        //NSLog(@"El libro era favorito y lo quitamos...");
     }
+    
+    // Leo el diccionario de favoritos del NSUserDefaults.
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    NSDictionary *favorites = [[def objectForKey:FAVORITES_DICTIONARY] mutableCopy];
+    
+    // Guardo en el diccionario si un libro es o no favorito.
+    [favorites setValue:[NSNumber numberWithBool:aBook.isFavorite]
+                 forKey:aBook.title];
+    
+    // Vuelvo a guardar el diccionario en el NSUserDefaults.
+    [def setObject:favorites forKey:FAVORITES_DICTIONARY];
+    [def synchronize];
     
     // Finalmente sustituimos el array actual por el actualizado con el nuevo libro.
     [self.dictionaryOfTags setObject:arr

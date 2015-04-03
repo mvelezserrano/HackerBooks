@@ -24,8 +24,28 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     
-    // Valor por defecto para el último libro seleccionado
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    
+    // Comprobamos si existen los favoritos
+    if (![def objectForKey:FAVORITES_DICTIONARY]) {
+        
+        // guardamos un valor por defecto
+        [def setObject:[[NSDictionary alloc] init]
+                forKey:FAVORITES_DICTIONARY];
+        [def synchronize];
+    }
+    
+    BOOL isFirstBoot=NO;
+    // Comprobamos si es el primer arranque
+    if (![def boolForKey:FIRST_BOOT]) {
+        NSLog(@"Primer arranque!!!");
+        [def setBool:YES
+                forKey:FIRST_BOOT];
+        [def synchronize];
+        isFirstBoot = YES;
+    }
+    
+    // Valor por defecto para el último libro seleccionado
     if (![def objectForKey:LAST_SELECTED_BOOK]) {
         
         // guardamos un valor por defecto
@@ -34,22 +54,8 @@
         [def synchronize];
     }
     
-    // Comprobamos si es el primer arranque
-    if (![def boolForKey:FIRST_BOOT]) {
-        NSLog(@"Primer arranque!!!");
-        [def setBool:YES
-                forKey:FIRST_BOOT];
-        [def synchronize];
-    } else {
-        NSLog(@"NO ES el primer arranque!!!");
-        //[def setBool:YES    // --> PARA QUE SIEMPRE SEA EL PRIMER ARRANQUE!!!!!!
-        [def setBool:NO
-              forKey:FIRST_BOOT];
-        [def synchronize];
-    }
-    
     // Obtenemos el JSON en formato NSData, ya sea descargándolo o leyéndolo del directorio Documents.
-    NSData *jsonData = [self getJSONDependingOnBoot: [def boolForKey:FIRST_BOOT]];
+    NSData *jsonData = [self getJSONDependingOnBoot: isFirstBoot];
     
     
     // Creamos un modelo de librería
@@ -152,12 +158,15 @@
         if (json == nil) {
             NSLog(@"Error al descargar datos del servidor: %@", err.localizedDescription);
         }
+        
     // ... y si no es el primer arranque....
     } else {
+        NSLog(@"Leemos el json del disco");
         // Obtenemos el json del disco duro.
-        json = [NSData dataWithContentsOfURL:[documentsUrl URLByAppendingPathComponent:@"books_readable.json"]
+        /*json = [NSData dataWithContentsOfURL:[documentsUrl URLByAppendingPathComponent:@"books_readable.json"]
                                      options:NSDataReadingMappedIfSafe
-                                       error:&err];
+                                       error:&err];*/
+        json = [fm contentsAtPath:[[documentsUrl URLByAppendingPathComponent:@"books_readable.json"] path]];
         if (json == nil) {
             NSLog(@"Error al leer: %@", err.localizedDescription);
         }
@@ -167,20 +176,24 @@
 }
 
 
--(NSData *) downloadJSONAndImages: (NSData *) json inDocumentsDirectory: (NSURL *) documentsUrl {
+-(void) downloadJSONAndImages: (NSData *) json inDocumentsDirectory: (NSURL *) documentsUrl {
+    
+    // Guardamos el json en el disco
+    [self saveData:json toDocumentDirectory:[documentsUrl URLByAppendingPathComponent:@"books_readable.json"]];
+    
     NSError *err = nil;
-    NSData  *modifiedJson;
+    //NSData  *modifiedJson;
     NSArray *JSONArray = [NSJSONSerialization JSONObjectWithData:json
                                                             options:kNilOptions
                                                               error:&err];
     
-    NSMutableArray *modifiedJSONArray = [[NSMutableArray  alloc] init];
+    //NSMutableArray *modifiedJSONArray = [[NSMutableArray  alloc] init];
     
     if (JSONArray != nil) {
         // Para cada libro ....
         for(NSDictionary *dict in JSONArray){
             // Creamos una copia mutable del diccionario del libro.
-            NSMutableDictionary *mutDict = [dict mutableCopy];
+            //NSMutableDictionary *mutDict = [dict mutableCopy];
 
             NSData *downloadedImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[dict objectForKey:@"image_url"]]
                                                                 options:kNilOptions
@@ -192,16 +205,17 @@
             [self saveData:downloadedImageData toDocumentDirectory:imageLocalUrl];
             
             // Añadimos la nueva url local de la imagen al diccionario del libro
-            [mutDict setObject:[imageLocalUrl absoluteString] forKey:@"image_url"];
+            //[mutDict setObject:[imageLocalUrl absoluteString] forKey:@"image_url"];
             
             // Añadimos el diccionario del libro actualizado al array de libros.
-            [modifiedJSONArray addObject:mutDict];
+            //[modifiedJSONArray addObject:mutDict];
         }
     }else{
         NSLog(@"Error al parsear JSON: %@", err.localizedDescription);
     }
     
     // Convertimos el array de diccionarios de libros a JSON.
+    /*
     modifiedJson = [NSJSONSerialization dataWithJSONObject:[NSArray arrayWithArray: modifiedJSONArray]
                                                    options:kNilOptions
                                                      error:&err];
@@ -209,11 +223,14 @@
     if (modifiedJson == nil) {
         NSLog(@"Error al crear el modifiedJson: %@", err.localizedDescription);
     }
+    */
     
+    /*
     // Guardamos el json en el disco
     [self saveData:modifiedJson toDocumentDirectory:[documentsUrl URLByAppendingPathComponent:@"books_readable.json"]];
+    */
     
-    return modifiedJson;
+    //return modifiedJson;
 }
 
 
@@ -242,6 +259,20 @@
     // Obtengo el libro
     AGTBook *book = [library bookForTag:[[library tags] objectAtIndex:section]
                                 atIndex:pos];
+    
+    /* En el caso de que tuviéramos seleccionado el último libro en la sección 
+     de favoritos y lo desmarcamos como favorito, la sección se quedaría vacía.
+     Si en ese momento salimos de la app, ésta guarda esa posición como la del
+     último libro consultado. Así que al volver a arrancar, no mostraría ningún
+     libro porque ya no existe ningún libro en esa posición (book == nil). Es 
+     por ese motivo que obtendremos el primer libro de la primera sección posterior
+     a la de 'Favorites'.*/
+    while (book==nil) {
+        section+=1;
+        pos=0;
+        book = [library bookForTag:[[library tags] objectAtIndex:section]
+                           atIndex:pos];
+    }
     
     // Lo devuelvo
     return book;

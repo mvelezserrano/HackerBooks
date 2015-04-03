@@ -24,7 +24,8 @@
             authors: (NSString *) authors
                tags: (NSString *) tags
            imageURL: (NSURL *) imageURL
-             pdfURL: (NSString *) pdfURL;
+             pdfURL: (NSString *) pdfURL
+           favorite: (BOOL) isFavorite;
 
 
 // Inicializador a partir de un diccionario JSON
