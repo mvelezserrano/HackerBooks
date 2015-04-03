@@ -14,7 +14,7 @@
 @property (copy, nonatomic) NSString *authors;
 @property (copy, nonatomic) NSString *tags;
 @property (copy, nonatomic) NSURL *imageURL;
-@property (copy, nonatomic) NSString *pdfURL;
+@property (copy, nonatomic) NSURL *pdfURL;
 
 @property (nonatomic) BOOL isFavorite;
 
@@ -24,7 +24,7 @@
             authors: (NSString *) authors
                tags: (NSString *) tags
            imageURL: (NSURL *) imageURL
-             pdfURL: (NSString *) pdfURL
+             pdfURL: (NSURL *) pdfURL
            favorite: (BOOL) isFavorite;
 
 

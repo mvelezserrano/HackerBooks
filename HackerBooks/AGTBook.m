@@ -14,7 +14,7 @@
             authors: (NSString *) authors
                tags: (NSString *) tags
            imageURL: (NSURL *) imageURL
-             pdfURL: (NSString *) pdfURL
+             pdfURL: (NSURL *) pdfURL
            favorite: (BOOL) isFavorite {
     
     if (self = [super init]) {
@@ -45,7 +45,7 @@
              @"authors"    : self.authors,
              @"tags"       : self.tags,
              @"image_url"  : [self.imageURL path],
-             @"pdf_url"    : self.pdfURL};
+             @"pdf_url"    : [self.pdfURL path]};
 }
 
 

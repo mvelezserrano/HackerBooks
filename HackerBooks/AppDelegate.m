@@ -80,25 +80,6 @@
     libTableVC.delegate = bookVC;
     splitVC.delegate = bookVC;
     
-    // RISTRA DE TESTS!!!
-    
-    /*
-    NSLog(@"Prueba método 'booksCount': %d", [model booksCount]);
-    NSLog(@"Número de tags: %d", [[model tags] count]);
-    NSLog(@"Prueba método 'tags': %@", [[model tags] componentsJoinedByString:@", "]);
-    
-    NSLog(@"Prueba método 'bookCountForTag: alrorithms': %d", [model bookCountForTag:@"algorithms"]);
-    NSArray *arrayDeLibrosOrdenado = [model booksForTag:@"algorithms"];
-    NSLog(@"Prueba método 'booksForTag: algorithms'");
-    for (AGTBook *each in arrayDeLibrosOrdenado) {
-        NSLog(@"Libro: %@", each.title);
-    }
-    AGTBook *libro = [model bookForTag:@"algorithms"
-                               atIndex:4];
-    NSLog(@"Prueba método 'booksForTag: algorithms atIndex: 0' %@", libro.title);
-    */
-    
-    
     self.window.rootViewController = splitVC;
     
     
@@ -180,57 +161,25 @@
     
     // Guardamos el json en el disco
     [self saveData:json toDocumentDirectory:[documentsUrl URLByAppendingPathComponent:@"books_readable.json"]];
-    
     NSError *err = nil;
-    //NSData  *modifiedJson;
     NSArray *JSONArray = [NSJSONSerialization JSONObjectWithData:json
                                                             options:kNilOptions
                                                               error:&err];
-    
-    //NSMutableArray *modifiedJSONArray = [[NSMutableArray  alloc] init];
-    
     if (JSONArray != nil) {
         // Para cada libro ....
         for(NSDictionary *dict in JSONArray){
-            // Creamos una copia mutable del diccionario del libro.
-            //NSMutableDictionary *mutDict = [dict mutableCopy];
-
+            
+            // Descargamos la imagen y la guardamos en en el disco.
             NSData *downloadedImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[dict objectForKey:@"image_url"]]
                                                                 options:kNilOptions
                                                                   error:&err];
             
             NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
-            
-            // Guardamos la imagen en el disco.
             [self saveData:downloadedImageData toDocumentDirectory:imageLocalUrl];
-            
-            // Añadimos la nueva url local de la imagen al diccionario del libro
-            //[mutDict setObject:[imageLocalUrl absoluteString] forKey:@"image_url"];
-            
-            // Añadimos el diccionario del libro actualizado al array de libros.
-            //[modifiedJSONArray addObject:mutDict];
         }
     }else{
         NSLog(@"Error al parsear JSON: %@", err.localizedDescription);
     }
-    
-    // Convertimos el array de diccionarios de libros a JSON.
-    /*
-    modifiedJson = [NSJSONSerialization dataWithJSONObject:[NSArray arrayWithArray: modifiedJSONArray]
-                                                   options:kNilOptions
-                                                     error:&err];
-    
-    if (modifiedJson == nil) {
-        NSLog(@"Error al crear el modifiedJson: %@", err.localizedDescription);
-    }
-    */
-    
-    /*
-    // Guardamos el json en el disco
-    [self saveData:modifiedJson toDocumentDirectory:[documentsUrl URLByAppendingPathComponent:@"books_readable.json"]];
-    */
-    
-    //return modifiedJson;
 }
 
 

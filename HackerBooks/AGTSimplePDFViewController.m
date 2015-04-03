@@ -27,6 +27,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -70,6 +71,13 @@
     [self.activityView setHidden:YES];
 }
 
+- (void) webViewDidStartLoad:(UIWebView *)webView {
+    
+    // Muestro y arranco el activityView
+    [self.activityView setHidden:NO];
+    [self.activityView startAnimating];
+}
+
 
 #pragma mark - Notifications
 
@@ -93,27 +101,41 @@
 
 - (void)syncViewToModel {
     
-    [self.activityView setHidden:NO];
-    [self.activityView startAnimating];
+    // Comprobar si existe el fichero en el Directorio Documents
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
+                               inDomains:NSUserDomainMask];
+    NSURL *documentsUrl = [urls lastObject];
+    NSURL *pdfLocalUrl = [documentsUrl URLByAppendingPathComponent:[self.model.pdfURL lastPathComponent]];
     
-    /*NSError *err = nil;
-    //NSLog(@"URl del pdf: %@", self.model.pdfURL);
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString: self.model.pdfURL]];
-    NSURLResponse *response = [[NSURLResponse alloc] init];
-    NSData *downloadedPDF = [NSURLConnection sendSynchronousRequest:request
-                                                   returningResponse:&response
-                                                               error:&err];
+    NSError *err;
+    NSData *pdfNSData;
     
-    if (downloadedPDF!=nil) {
-        [self.browser loadData:downloadedPDF
-                      MIMEType:@"application/pdf"
-              textEncodingName:@"utf-8"
-                       baseURL:nil];
+    if ([fm fileExistsAtPath:[pdfLocalUrl path]]) {
+        // Si existe, entonces cargamos el pdf local
+        NSLog(@"El archivo ya existe");
+        pdfNSData = [NSData dataWithContentsOfFile: [pdfLocalUrl path]];
     } else {
-        // Error al descargar los datos del servidor
-        NSLog(@"Error al descargar datos del servidor: %@", err.localizedDescription);
-    }*/
+        // Si no existe, lo descargamos y lo guardamos en local.
+        NSLog(@"El archivo NO existe, así que lo descargamos");
+        NSData *downloadedPDFData = [NSData dataWithContentsOfURL:self.model.pdfURL
+                                                          options:kNilOptions
+                                                            error:&err];
+        BOOL result = [downloadedPDFData writeToURL:pdfLocalUrl
+                                            options:NSDataWritingAtomic
+                                              error:&err];
+        if (result == NO) {
+            NSLog(@"Error al guardar la imagen descargada: %@", err.localizedDescription);
+        }
+        pdfNSData = downloadedPDFData;
+    }
     
+    // Finalmente, mostramos el pdf en el WebView.
+    [self.browser loadData:pdfNSData
+                  MIMEType:@"application/pdf"
+          textEncodingName:@"utf-8"
+                   baseURL:nil];
+    //[self.browser loadRequest:[NSURLRequest requestWithURL:pdfLocalUrl]];
 }
 
 

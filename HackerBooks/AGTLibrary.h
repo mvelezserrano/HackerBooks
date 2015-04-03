@@ -14,10 +14,6 @@
 
 -(id) initWithJSON: (NSData *) json;
 
--(AGTBook *) primerLibro;
-
--(AGTBook *) randomLibro;
-
 -(void) setBookFavorite: (AGTBook *) aBook;
 
 // Número total de libros

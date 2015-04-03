@@ -64,7 +64,7 @@
                                                        authors:[dict objectForKey:@"authors"]
                                                           tags:[dict objectForKey:@"tags"]
                                                       imageURL:imageLocalUrl
-                                                        pdfURL:[dict objectForKey:@"pdf_url"]
+                                                        pdfURL:[NSURL URLWithString:[dict objectForKey:@"pdf_url"]]
                                                       favorite:favorite];
                 
                 
@@ -110,10 +110,10 @@
                 }
                 
                 // Convertimos el libro en un diccionario...
-                NSDictionary *dictBook = [book asJSONDictionary];
+                //NSDictionary *dictBook = [book asJSONDictionary];
                 
                 // ... y lo añadimos al array de diccionarios de libros actualizados.
-                [self.arrayOfUpdatedBookDicts addObject:dictBook];
+                //[self.arrayOfUpdatedBookDicts addObject:dictBook];
             }
         }else{
             NSLog(@"Error al parsear JSON: %@", err.localizedDescription);
@@ -141,15 +141,6 @@
     }
 
     return self;
-}
-
-
--(AGTBook *) primerLibro {
-    return [self.arrayOfBooks objectAtIndex:0];
-}
-
--(AGTBook *) randomLibro {
-    return [self.arrayOfBooks objectAtIndex:arc4random() % [self.arrayOfBooks count]];
 }
 
 
