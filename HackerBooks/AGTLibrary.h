@@ -18,6 +18,8 @@
 
 -(AGTBook *) randomLibro;
 
+-(void) setBookFavorite: (AGTBook *) aBook;
+
 // Número total de libros
 -(NSUInteger) booksCount;
 

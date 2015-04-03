@@ -52,6 +52,15 @@
 }
 
 
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    // Me doy de baja de las notificaciones
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
 #pragma mark - UIWebViewDelegate
 
 - (void) webViewDidFinishLoad:(UIWebView *)webView {
@@ -67,7 +76,7 @@
 // BOOK_DID_CHANGE_NOTIFICATION_NAME     --> Para saber los métodos que reciben esta notificación.
 - (void) notifyThatBookDidChange:(NSNotification *) notification {
     
-    // Sacamos el personaje
+    // Sacamos el libro
     AGTBook *book = [notification.userInfo objectForKey:BOOK_KEY];
     
     // Actualizamos el modelo

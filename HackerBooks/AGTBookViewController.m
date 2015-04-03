@@ -55,6 +55,12 @@
     self.bookAuthors.text = self.model.authors;
     self.bookTags.text = self.model.tags;
     
+    if (self.model.isFavorite) {
+        [self.favoriteSwitch setOn:YES];
+    } else {
+        [self.favoriteSwitch setOn:NO];
+    }
+    
     self.bookTitle.numberOfLines = 0;
     [self.bookTitle sizeToFit];
     
@@ -79,6 +85,25 @@
                                          animated:YES];
 }
 
+
+- (IBAction)setFavorite:(id)sender {
+    
+    if ([sender isOn]) {
+        self.model.isFavorite = YES;
+    } else {
+        self.model.isFavorite = NO;
+    }
+    
+    // Mandamos una notificación por el cambio de favorito
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    NSDictionary *dict = @{BOOK_KEY : self.model};
+    
+    NSNotification *n = [NSNotification notificationWithName:BOOK_FAVORITE_NOTIFICATION_NAME
+                                                      object:self
+                                                    userInfo:dict];
+    [nc postNotification:n];
+}
 
 
 #pragma mark - UISplitViewControllerDelegate

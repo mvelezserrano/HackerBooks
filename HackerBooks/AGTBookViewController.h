@@ -19,8 +19,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *bookTitle;
 @property (weak, nonatomic) IBOutlet UILabel *bookAuthors;
 @property (weak, nonatomic) IBOutlet UILabel *bookTags;
+@property (weak, nonatomic) IBOutlet UISwitch *favoriteSwitch;
 
 - (IBAction)displayPDF:(id)sender;
+- (IBAction)setFavorite:(id)sender;
 
 - (id)initWithModel:(AGTBook *)model;
 

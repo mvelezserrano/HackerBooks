@@ -10,6 +10,7 @@
                 <outlet property="bookImage" destination="8TV-lV-DSz" id="41y-4R-G6j"/>
                 <outlet property="bookTags" destination="lWR-OT-3bU" id="Nwv-GL-TnB"/>
                 <outlet property="bookTitle" destination="1vk-NC-FKq" id="hcr-FP-7WP"/>
+                <outlet property="favoriteSwitch" destination="mnK-Hd-PAd" id="9n7-VY-NgR"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -74,6 +75,9 @@
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="mnK-Hd-PAd">
                     <rect key="frame" x="634" y="337" width="51" height="31"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <connections>
+                        <action selector="setFavorite:" destination="-1" eventType="valueChanged" id="MXw-Uj-6pS"/>
+                    </connections>
                 </switch>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="anD-Po-lhB">
                     <rect key="frame" x="595" y="415" width="88" height="30"/>

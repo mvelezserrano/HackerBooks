@@ -38,6 +38,28 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    // Alta en notificación
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self
+           selector:@selector(notifyThatFavoriteChange:)
+               name:BOOK_FAVORITE_NOTIFICATION_NAME
+             object:nil];
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated{
+    
+    [super viewWillDisappear:animated];
+    
+    // Me doy de baja de las notificaciones
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -111,25 +133,12 @@
     AGTBook *book = [self.model bookForTag:[[self.model tags] objectAtIndex:indexPath.section]
                                    atIndex:indexPath.row];
     
-    // ANTES DEL SPLITVIEWCONTROLLER .....
-    /*
-    // Crear el controlador del libro
-    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:book];
-    
-    // Hacemos push del controller
-    [self.navigationController pushViewController:bookVC
-                                         animated:YES];
-    */
-    
-    // DESPUÉS DEL SPLITVIEWCONTROLLER .....
-    
     // Avisar al delegado (siempre y cuando entienda el mensaje).
     if ([self.delegate respondsToSelector:@selector(libraryTableViewController:didSelectBook:)]) {
         // Si que lo entiende, lo mandamos...
         [self.delegate libraryTableViewController:self
                                 didSelectBook:book];
     }
-    
     
     // Mandamos una notificación
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -148,13 +157,6 @@
     [def setObject:coords
             forKey:LAST_SELECTED_BOOK];
     [def synchronize];
-    
-    
-    
-    
-    
-    
-    
 }
 
 
@@ -170,5 +172,27 @@
     [self.navigationController pushViewController:bookVC
                                          animated:YES];
 }
+
+
+#pragma mark - Notifications
+
+// BOOK_FAVORITE_NOTIFICATION_NAME     --> Para saber los métodos que reciben esta notificación.
+- (void) notifyThatFavoriteChange:(NSNotification *) notification {
+    
+    NSLog(@"Tabla notificada del cambio de favorito");
+    
+    // Sacamos el libro cambiado
+    AGTBook *book = [notification.userInfo objectForKey:BOOK_KEY];
+    
+    // Actualizar la librería añadiendo el libro al tag 'Favorite'
+    [self.model setBookFavorite:book];
+    
+    
+    // Recargar la tabla
+    [self.tableView reloadData];
+    
+}
+
+
 
 @end

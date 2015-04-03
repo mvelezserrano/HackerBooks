@@ -110,8 +110,10 @@
         [self.arrayOfTags sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         
         // Añadimos tag favorite como el primero de todos los tags.
-        [self.arrayOfTags insertObject:@"Favorites"
-                               atIndex:0];
+        [self.arrayOfTags insertObject:@"Favorites" atIndex:0];
+        
+        // Añadimos el tag 'Favorite' al dictionaryOfTags.
+        [self.dictionaryOfTags setObject:[[NSArray alloc] init] forKey:@"Favorites"];
         
         // Por último, actualizamos el json local con las nuevas url de las imágenes.
         [self updateLocalJSONWithArray: [NSArray arrayWithArray:self.arrayOfUpdatedBookDicts]];
@@ -231,9 +233,29 @@
     } else {
         NSLog(@"Error al crear el updatedJSON: %@", err.localizedDescription);
     }
-    
-    
 }
+
+
+-(void) setBookFavorite: (AGTBook *) aBook {
+    
+    // Obtenemos del 'dictionaryOfTags' el array de libros que actualmente tienen
+    // el tag 'Favorite', convirtiéndolo en un NSMutableArray.
+    NSMutableArray *arr = [[self.dictionaryOfTags objectForKey:@"Favorites"] mutableCopy];
+    
+    // Si el libro estaba como favorito, lo quitamos, sino, lo añadimos.
+    if (aBook.isFavorite) {
+        [arr addObject:aBook];
+        NSLog(@"El libro NO era favorito y lo añadimos...");
+    } else {
+        [arr removeObject:aBook];
+        NSLog(@"El libro era favorito y lo quitamos...");
+    }
+    
+    // Finalmente sustituimos el array actual por el actualizado con el nuevo libro.
+    [self.dictionaryOfTags setObject:arr
+                              forKey:@"Favorites"];
+}
+
 
 
 
