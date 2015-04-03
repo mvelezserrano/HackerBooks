@@ -17,8 +17,6 @@
 @property (strong, nonatomic) NSMutableDictionary *dictionaryOfTags;
 @property (strong, nonatomic) NSMutableArray *arrayOfUpdatedBookDicts;
 
-@property (nonatomic) int contadorLibros;
-
 @end
 
 @implementation AGTLibrary
@@ -36,101 +34,89 @@
         NSArray * JSONObjects = [NSJSONSerialization JSONObjectWithData:json
                                                                 options:kNilOptions
                                                                   error:&err];
-        // Averiguar la url a la carpeta de Application Support.
+        // Averiguar la url a la carpeta Documents.
         NSFileManager *fm = [NSFileManager defaultManager];
         NSArray *urls = [fm URLsForDirectory:NSDocumentDirectory
                                    inDomains:NSUserDomainMask];
-        //NSArray *urls = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, NO);
         NSURL *documentsUrl = [urls lastObject];
         
         
         if (JSONObjects != nil) {
             // No ha habido error
             for(NSDictionary *dict in JSONObjects){
-                //AGTBook *book = [[AGTBook alloc] initWithDictionary:dict];
-                
-                /*
-                // Create an NSData object from the contents of the given URL.
-                NSData *downloadedImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:[dict objectForKey:@"image_url"]]
-                                                               options:kNilOptions
-                                                                 error:&err];
-                
-                // 1.2) Añadir el componente del nombre del fichero
-                NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
-                
-                // 1.3) Guardamos la imagen en la carpeta y comprobamos que no devuelve error.
-                BOOL rc = [downloadedImageData writeToURL:imageLocalUrl
-                                                  options:NSDataWritingAtomic
-                                                    error:&err];
-                if (rc == NO) {
-                    // Error!
-                    NSLog(@"Error al guardar la imagen descargada: %@", err.localizedDescription);
-                }
-                */
-                
-                NSLog(@"urlRemontada: %@", [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]]);
                 
                 NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
                 
-                 
                 AGTBook *book = [[AGTBook alloc] initWithTitle:[dict objectForKey:@"title"]
                                                        authors:[dict objectForKey:@"authors"]
                                                           tags:[dict objectForKey:@"tags"]
                                                       imageURL:imageLocalUrl
-                                                      //imageURL:[dict objectForKey:@"image_url"]
                                                         pdfURL:[dict objectForKey:@"pdf_url"]];
-                self.contadorLibros+=1;
                 
+                // Añadimos el libro al NSMutableArray de libros 'arrayOfBooks'
                 [self.arrayOfBooks addObject:book];
                 
+                // Convierto el string de tags en un array.
                 NSArray *bookTags = [self createArrayFromJSONMultipleString:[dict objectForKey:@"tags"]];
-
+                
+                // Para cada tag del libro que estamos tratando...
                 for (NSString *bookTag in bookTags) {
+                    // Si el tag aún no ha estado catalogado....
                     if (![self.dictionaryOfTags objectForKey:bookTag]) {
                         
-                        // Guardamos en un diccionario un array de libros con la key del tag
+                        // Creamos un array que contendrá todos los libros con ese tag, y el cuál
+                        // inicializamos con el libro actual al ser el primero que contiene ese tag.
                         NSArray *tagBookArray = @[book];
+                        
+                        // Guardamos ese array de libros en un diccionario con la key del tag actual
                         [self.dictionaryOfTags setObject:tagBookArray
                                                   forKey:bookTag];
+                        
+                        // Finalmente añadimos el tag al NSMutableArray 'arrayOfTags' que contiene todos
+                        // los tags sin que se repitan.
                         [self.arrayOfTags addObject:bookTag];
                     
+                    // Pero si el tag ya ha sido catalogado...
                     } else {
                         
-                        // Añadimos el libro al array de libros con la key del tag.
+                        
+                        // Obtenemos del 'dictionaryOfTags' el array de libros que actualmente tienen
+                        // el tag actual, convirtiéndolo en un NSMutableArray.
                         NSMutableArray *arr = [[self.dictionaryOfTags objectForKey:bookTag] mutableCopy];
+                        // Añadimos el nuevo libro a ese array de libros.
                         [arr addObject:book];
+                        // Finalmente sustituimos el array actual por el actualizado con el nuevo libro.
                         [self.dictionaryOfTags setObject:arr
                                                   forKey:bookTag];
                     }
                 }
                 
-                /*
+                // Convertimos el libro en un diccionario...
                 NSDictionary *dictBook = [book asJSONDictionary];
-                NSLog(@"url de la imagen descargada: %@", [dictBook objectForKey:@"image_url"]);
                 
+                // ... y lo añadimos al array de diccionarios de libros actualizados.
                 [self.arrayOfUpdatedBookDicts addObject:dictBook];
-                */
             }
         }else{
-            // Se ha producido un error al parsear el JSON
             NSLog(@"Error al parsear JSON: %@", err.localizedDescription);
         }
         
-        // Ordenar books
+        /// Una vez tratados todos los libros de la librería....
+        
+        // Ordenamos alfabéticamente los libros...
         [self.arrayOfBooks sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         
-        // Ordenar tags
+        // Ordenamos alfabéticamente los tags...
         [self.arrayOfTags sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         
-        // Añadimos tag favorite como el primero de todos.
+        // Añadimos tag favorite como el primero de todos los tags.
         [self.arrayOfTags insertObject:@"Favorites"
                                atIndex:0];
         
-        //[self updateLocalJSONWithArray: [NSArray arrayWithArray:self.arrayOfUpdatedBookDicts]];
+        // Por último, actualizamos el json local con las nuevas url de las imágenes.
+        [self updateLocalJSONWithArray: [NSArray arrayWithArray:self.arrayOfUpdatedBookDicts]];
     }
-    
-    NSLog(@"Total de libros: %d", self.contadorLibros);
-    
+
     return self;
 }
 
