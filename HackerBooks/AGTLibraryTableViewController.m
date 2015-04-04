@@ -11,6 +11,7 @@
 #import "AGTLibrary.h"
 #import "AGTBookViewController.h"
 #import "Settings.h"
+#import "AGTBookTableViewCell.h"
 
 @interface AGTLibraryTableViewController ()
 
@@ -31,6 +32,10 @@
                selector:@selector(notifyThatFavoriteChange:)
                    name:BOOK_FAVORITE_NOTIFICATION_NAME
                  object:nil];
+        [nc addObserver:self
+               selector:@selector(notifyThatPDFDownloaded:)
+                   name:BOOK_DOWNLOADED
+                 object:nil];
     }
     
     return self;
@@ -39,6 +44,12 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    
+    UINib *nib = [UINib nibWithNibName:@"AGTBookTableViewCell"
+                                bundle:[NSBundle mainBundle]];
+    
+    [self.tableView registerNib:nib
+         forCellReuseIdentifier:[AGTBookTableViewCell cellId]];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -64,23 +75,18 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
     // Tantas secciones como tags más una de favoritos.
-    //NSLog(@"NumberOfSections: %d", [[self.model tags] count]);
-    
     return [[self.model tags] count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    /* Buscamos en el array de tags, el NSString del tag que está en la posición 'section - 1',
-      ya que la primera sección siempre será 'favoritos'. Para saber el número de filas que habrá
-     en esa sección, hacemos un count del número de libros que tienen ese tag.*/
     
-    //NSLog(@"Section: %@ , Rows: %d",[[self.model tags] objectAtIndex:section] ,[[self.model booksForTag:[[self.model tags] objectAtIndex:section]] count]);
-    
+    /* Para saber el número de filas que habrá en cada sección, hacemos un count 
+     del número de libros que tienen ese tag.*/
     return [[self.model booksForTag:[[self.model tags] objectAtIndex:section]] count];
 }
 
-
+/*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     // Averiguar de qué libro estamos hablando
@@ -110,6 +116,40 @@
     // Devolvemos la celda
     return cell;
 }
+*/
+
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return 80;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    // Averiguar de qué libro estamos hablando
+    AGTBook *book = [self.model bookForTag:[[self.model tags] objectAtIndex:indexPath.section]
+                                   atIndex:indexPath.row];
+    
+    // Crear una celda
+    AGTBookTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:[AGTBookTableViewCell cellId]
+                                                            forIndexPath:indexPath];
+    
+    // Sincronizar modelo (libro) --> vista (celda)
+    if (book.downloaded) {
+        cell.bookIcon.image = [UIImage imageNamed:@"open_book.png"];
+    } else {
+        cell.bookIcon.image = [UIImage imageNamed:@"closed_book.png"];
+    }
+    
+    cell.bookTitle.text = book.title;
+    cell.bookAuthors.text = book.authors;
+    
+    return cell;
+}
+
+
+
+
 
 - (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
@@ -183,6 +223,16 @@
     [self.tableView reloadData];
     
 }
+
+
+// BOOK_DOWNLOADED
+- (void) notifyThatPDFDownloaded: (NSNotification *) notification {
+    
+    // Recargar la tabla
+    [self.tableView reloadData];
+}
+
+
 
 
 

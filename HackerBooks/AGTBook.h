@@ -17,6 +17,7 @@
 @property (copy, nonatomic) NSURL *pdfURL;
 
 @property (nonatomic) BOOL isFavorite;
+@property (nonatomic) BOOL downloaded;
 
 
 // Designated
@@ -25,7 +26,8 @@
                tags: (NSString *) tags
            imageURL: (NSURL *) imageURL
              pdfURL: (NSURL *) pdfURL
-           favorite: (BOOL) isFavorite;
+           favorite: (BOOL) isFavorite
+         downloaded: (BOOL) downloaded;
 
 
 // Inicializador a partir de un diccionario JSON

@@ -8,6 +8,7 @@
 
 #define BOOK_DID_CHANGE_NOTIFICATION_NAME @"bookDidChangeNotification"
 #define BOOK_FAVORITE_NOTIFICATION_NAME @"bookFavoriteNotification"
+#define BOOK_DOWNLOADED @"bookDownloaded"
 #define BOOK_KEY @"bookKey"
 
 #import <UIKit/UIKit.h>

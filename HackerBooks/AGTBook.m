@@ -15,7 +15,8 @@
                tags: (NSString *) tags
            imageURL: (NSURL *) imageURL
              pdfURL: (NSURL *) pdfURL
-           favorite: (BOOL) isFavorite {
+           favorite: (BOOL) isFavorite
+         downloaded: (BOOL) downloaded {
     
     if (self = [super init]) {
         _title = title;
@@ -24,6 +25,7 @@
         _imageURL = imageURL;
         _pdfURL = pdfURL;
         _isFavorite = isFavorite;
+        _downloaded = downloaded;
     }
     
     return self;
@@ -35,7 +37,8 @@
                           tags:[dict objectForKey:@"tags"]
                       imageURL:[dict objectForKey:@"image_url"]
                         pdfURL:[dict objectForKey:@"pdf_url"]
-                      favorite: NO];
+                      favorite: NO
+                    downloaded: NO];
 }
 
 

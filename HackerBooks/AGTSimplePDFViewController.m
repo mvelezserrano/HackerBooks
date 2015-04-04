@@ -112,11 +112,9 @@
     
     if ([fm fileExistsAtPath:[pdfLocalUrl path]]) {
         // Si existe, entonces cargamos el pdf local
-        NSLog(@"El archivo ya existe");
         pdfNSData = [NSData dataWithContentsOfFile: [pdfLocalUrl path]];
     } else {
         // Si no existe, lo descargamos y lo guardamos en local.
-        NSLog(@"El archivo NO existe, así que lo descargamos");
         NSData *downloadedPDFData = [NSData dataWithContentsOfURL:self.model.pdfURL
                                                           options:kNilOptions
                                                             error:&err];
@@ -124,9 +122,21 @@
                                             options:NSDataWritingAtomic
                                               error:&err];
         if (result == NO) {
-            NSLog(@"Error al guardar la imagen descargada: %@", err.localizedDescription);
+            NSLog(@"Error al guardar el pdf descargado: %@", err.localizedDescription);
         }
         pdfNSData = downloadedPDFData;
+        
+        [self.model setDownloaded:YES];
+        
+        // Mandamos una notificación por haber descargado el pdf
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        
+        NSDictionary *dict = @{BOOK_KEY : self.model};
+        
+        NSNotification *n = [NSNotification notificationWithName:BOOK_DOWNLOADED
+                                                          object:self
+                                                        userInfo:dict];
+        [nc postNotification:n];
     }
     
     // Finalmente, mostramos el pdf en el WebView.

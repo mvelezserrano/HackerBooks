@@ -20,6 +20,10 @@
 		55EE13EE1ACB103C009AC512 /* AGTSimplePDFViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55EE13EC1ACB103C009AC512 /* AGTSimplePDFViewController.xib */; };
 		55EE13F11ACB1FA1009AC512 /* AGTLibraryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */; };
 		55EE13F31ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55EE13F21ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib */; };
+		55EE13F71AD02EE0009AC512 /* AGTBookTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE13F51AD02EE0009AC512 /* AGTBookTableViewCell.m */; };
+		55EE13F81AD02EE0009AC512 /* AGTBookTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55EE13F61AD02EE0009AC512 /* AGTBookTableViewCell.xib */; };
+		55EE13FD1AD03DBB009AC512 /* closed_book.png in Resources */ = {isa = PBXBuildFile; fileRef = 55EE13FC1AD03DBB009AC512 /* closed_book.png */; };
+		55EE13FF1AD03EB5009AC512 /* open_book.png in Resources */ = {isa = PBXBuildFile; fileRef = 55EE13FE1AD03EB5009AC512 /* open_book.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +61,11 @@
 		55EE13EF1ACB1FA1009AC512 /* AGTLibraryTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTLibraryTableViewController.h; sourceTree = "<group>"; };
 		55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTLibraryTableViewController.m; sourceTree = "<group>"; };
 		55EE13F21ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AGTBookViewControlleriPhone.xib; sourceTree = "<group>"; };
+		55EE13F41AD02EE0009AC512 /* AGTBookTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTBookTableViewCell.h; sourceTree = "<group>"; };
+		55EE13F51AD02EE0009AC512 /* AGTBookTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTBookTableViewCell.m; sourceTree = "<group>"; };
+		55EE13F61AD02EE0009AC512 /* AGTBookTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AGTBookTableViewCell.xib; sourceTree = "<group>"; };
+		55EE13FC1AD03DBB009AC512 /* closed_book.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = closed_book.png; sourceTree = "<group>"; };
+		55EE13FE1AD03EB5009AC512 /* open_book.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = open_book.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +89,8 @@
 		55114AE31AC6B54100C7AC4A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				55EE13FC1AD03DBB009AC512 /* closed_book.png */,
+				55EE13FE1AD03EB5009AC512 /* open_book.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -108,6 +119,7 @@
 				55114AE31AC6B54100C7AC4A /* Resources */,
 				55117CDA1AC4872A0023223F /* Models */,
 				552CC6841AC5DBEF0000FBE8 /* Controllers */,
+				55EE13F91AD02EF0009AC512 /* Views */,
 				55117CBB1AC485E30023223F /* AppDelegate.h */,
 				55117CBC1AC485E30023223F /* AppDelegate.m */,
 				55117CBE1AC485E30023223F /* Images.xcassets */,
@@ -169,6 +181,16 @@
 				55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		55EE13F91AD02EF0009AC512 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				55EE13F41AD02EE0009AC512 /* AGTBookTableViewCell.h */,
+				55EE13F51AD02EE0009AC512 /* AGTBookTableViewCell.m */,
+				55EE13F61AD02EE0009AC512 /* AGTBookTableViewCell.xib */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,6 +276,9 @@
 				55117CC21AC485E30023223F /* LaunchScreen.xib in Resources */,
 				55117CBF1AC485E30023223F /* Images.xcassets in Resources */,
 				55EE13F31ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib in Resources */,
+				55EE13F81AD02EE0009AC512 /* AGTBookTableViewCell.xib in Resources */,
+				55EE13FF1AD03EB5009AC512 /* open_book.png in Resources */,
+				55EE13FD1AD03DBB009AC512 /* closed_book.png in Resources */,
 				55EE13EE1ACB103C009AC512 /* AGTSimplePDFViewController.xib in Resources */,
 				552CC6891AC5DC450000FBE8 /* AGTBookViewController.xib in Resources */,
 			);
@@ -276,6 +301,7 @@
 				55117CDD1AC489370023223F /* AGTLibrary.m in Sources */,
 				55EE13F11ACB1FA1009AC512 /* AGTLibraryTableViewController.m in Sources */,
 				55117CBD1AC485E30023223F /* AppDelegate.m in Sources */,
+				55EE13F71AD02EE0009AC512 /* AGTBookTableViewCell.m in Sources */,
 				55EE13ED1ACB103C009AC512 /* AGTSimplePDFViewController.m in Sources */,
 				55117CD91AC487260023223F /* AGTBook.m in Sources */,
 				552CC6881AC5DC450000FBE8 /* AGTBookViewController.m in Sources */,

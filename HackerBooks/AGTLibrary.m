@@ -52,11 +52,18 @@
                 
                 // Obtenemos la url local de la carátula del libro ya descargada.
                 NSURL *imageLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"image_url"]lastPathComponent]];
+                NSURL *pdfLocalUrl = [documentsUrl URLByAppendingPathComponent:[[dict objectForKey:@"pdf_url"] lastPathComponent]];
                 
                 // Mirar si es favorito o no.
                 BOOL favorite = NO;
                 if ([favorites objectForKey:[dict objectForKey:@"title"]]) {
                     favorite = [[favorites objectForKey:[dict objectForKey:@"title"]] boolValue];
+                }
+                
+                // Mirar si el pdf está descargado o no.
+                BOOL downloaded = NO;
+                if ([fm fileExistsAtPath:[pdfLocalUrl path]]) {
+                    downloaded = YES;
                 }
                 
                 // Creamos el AGTBook.
@@ -65,7 +72,8 @@
                                                           tags:[dict objectForKey:@"tags"]
                                                       imageURL:imageLocalUrl
                                                         pdfURL:[NSURL URLWithString:[dict objectForKey:@"pdf_url"]]
-                                                      favorite:favorite];
+                                                      favorite:favorite
+                                                    downloaded:downloaded];
                 
                 
                 // Añadimos el libro al NSMutableArray de libros 'arrayOfBooks'
