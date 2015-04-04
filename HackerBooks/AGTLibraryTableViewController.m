@@ -24,7 +24,7 @@
     
     if (self = [super initWithStyle:style]) {
         _model = model;
-        self.title = @"AGT Library";
+        self.title = @"Programming Library";
         
         // Alta en notificación
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
