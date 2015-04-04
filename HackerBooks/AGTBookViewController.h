@@ -21,6 +21,15 @@
 @property (weak, nonatomic) IBOutlet UILabel *bookTags;
 @property (weak, nonatomic) IBOutlet UISwitch *favoriteSwitch;
 
+// Vista horizontal
+@property (weak, nonatomic) IBOutlet UIImageView *bookImageLandscape;
+@property (weak, nonatomic) IBOutlet UILabel *bookTitleLandscape;
+@property (weak, nonatomic) IBOutlet UILabel *bookAuthorsLandscape;
+@property (weak, nonatomic) IBOutlet UILabel *bookTagsLandscape;
+@property (weak, nonatomic) IBOutlet UISwitch *favoriteSwitchLandscape;
+
+@property (strong, nonatomic) IBOutlet UIView *landscapeView;
+
 - (IBAction)displayPDF:(id)sender;
 - (IBAction)setFavorite:(id)sender;
 

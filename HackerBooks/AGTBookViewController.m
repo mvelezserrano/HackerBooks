@@ -9,6 +9,7 @@
 #import "AGTBook.h"
 #import "AGTBookViewController.h"
 #import "AGTSimplePDFViewController.h"
+#import "Settings.h"
 
 @interface AGTBookViewController ()
 
@@ -17,7 +18,15 @@
 @implementation AGTBookViewController
 
 - (id)initWithModel:(AGTBook *)model {
-    if (self = [super initWithNibName:nil
+    
+    // Cargar un xib u otro según el dispositivo
+    // la macro IS_IPHONE la hemos definido en el fichero Settings.h
+    NSString *nibName = nil;
+    if (IS_IPHONE) {
+        nibName = @"AGTBookViewControlleriPhone";
+    }
+    
+    if (self = [super initWithNibName:nibName
                                bundle:nil]) {
         _model = model;
         self.title = model.title;
@@ -30,16 +39,47 @@
     
     [super viewWillAppear:animated];
     
-    /* Asegurarse de que no se ocupa toda la pantalla cuando
-     estás en un combinador */
-    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     
     // Sincronizar modelo --> vista
     [self syncViewToModel];
     
+    // si estamos en landscape, añadimos la vista que tenemos para landscape
+    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        [self addLandscapeViewWithProperFrame];
+    }
+    
+    /* Asegurarse de que no se ocupa toda la pantalla cuando
+     estás en un combinador */
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
+    
     // Si estoy dentro de un splitVC me pongo el botón
     self.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
 }
+
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if (UIInterfaceOrientationIsLandscape(fromInterfaceOrientation)) {
+        // estamos en portrait
+        [self.landscapeView removeFromSuperview];
+    }
+    else {
+        // estamos en landscape
+        [self addLandscapeViewWithProperFrame];
+    }
+}
+
+- (void)addLandscapeViewWithProperFrame
+{
+    // asignamos el frame a la vista en portrait para que se redimensione
+    // si la añadimos directamente como view, al no estar dentro de un VC, no se va a redimensionar
+    CGRect iPhoneScreen = [[UIScreen mainScreen] bounds];
+    CGRect portraitRect = CGRectMake(0, 0, iPhoneScreen.size.height, iPhoneScreen.size.width);
+    self.landscapeView.frame = portraitRect;
+    [self.view addSubview:self.landscapeView];
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -69,7 +109,28 @@
     
     self.bookTags.numberOfLines = 0;
     [self.bookTags sizeToFit];
+    
+    // Modo Apaisado
+    self.title = self.model.title;
+    self.bookImageLandscape.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:self.model.imageURL]];
+    self.bookTitleLandscape.text = self.model.title;
+    self.bookAuthorsLandscape.text = self.model.authors;
+    self.bookTagsLandscape.text = self.model.tags;
+    
+    if (self.model.isFavorite) {
+        [self.favoriteSwitchLandscape setOn:YES];
+    } else {
+        [self.favoriteSwitchLandscape setOn:NO];
+    }
 
+    self.bookTitleLandscape.numberOfLines = 0;
+    [self.bookTitleLandscape sizeToFit];
+    
+    self.bookAuthorsLandscape.numberOfLines = 0;
+    [self.bookAuthorsLandscape sizeToFit];
+    
+    self.bookTagsLandscape.numberOfLines = 0;
+    [self.bookTagsLandscape sizeToFit];
 }
 
 

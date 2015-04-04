@@ -19,6 +19,7 @@
 		55EE13ED1ACB103C009AC512 /* AGTSimplePDFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE13EB1ACB103C009AC512 /* AGTSimplePDFViewController.m */; };
 		55EE13EE1ACB103C009AC512 /* AGTSimplePDFViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55EE13EC1ACB103C009AC512 /* AGTSimplePDFViewController.xib */; };
 		55EE13F11ACB1FA1009AC512 /* AGTLibraryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */; };
+		55EE13F31ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55EE13F21ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		55EE13EC1ACB103C009AC512 /* AGTSimplePDFViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AGTSimplePDFViewController.xib; sourceTree = "<group>"; };
 		55EE13EF1ACB1FA1009AC512 /* AGTLibraryTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGTLibraryTableViewController.h; sourceTree = "<group>"; };
 		55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGTLibraryTableViewController.m; sourceTree = "<group>"; };
+		55EE13F21ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AGTBookViewControlleriPhone.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +166,7 @@
 				55EE13EC1ACB103C009AC512 /* AGTSimplePDFViewController.xib */,
 				55EE13EF1ACB1FA1009AC512 /* AGTLibraryTableViewController.h */,
 				55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */,
+				55EE13F21ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 			files = (
 				55117CC21AC485E30023223F /* LaunchScreen.xib in Resources */,
 				55117CBF1AC485E30023223F /* Images.xcassets in Resources */,
+				55EE13F31ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib in Resources */,
 				55EE13EE1ACB103C009AC512 /* AGTSimplePDFViewController.xib in Resources */,
 				552CC6891AC5DC450000FBE8 /* AGTBookViewController.xib in Resources */,
 			);
