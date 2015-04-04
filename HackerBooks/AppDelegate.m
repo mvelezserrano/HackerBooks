@@ -59,12 +59,22 @@
     
     
     // Creamos un modelo de librería
-    AGTLibrary *model = [[AGTLibrary alloc] initWithJSON:jsonData];
+    AGTLibrary *library = [[AGTLibrary alloc] initWithJSON:jsonData];
     
     
+    // Detectamos el tipo de pantalla
+    if (!IS_IPHONE) {
+        // Tipo tableta
+        [self configureForPadWithModel: library];
+    } else {
+        // Tipo teléfono
+        [self configureForPhoneWithModel: library];
+    }
+    
+    /*
     // Controladores
-    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[self lastSelectedBookInModel: model]];
-    AGTLibraryTableViewController *libTableVC = [[AGTLibraryTableViewController alloc] initWithModel:model
+    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[self lastSelectedBookInModel: library]];
+    AGTLibraryTableViewController *libTableVC = [[AGTLibraryTableViewController alloc] initWithModel:library
                                                                                                style:UITableViewStylePlain];
     
     
@@ -81,9 +91,10 @@
     splitVC.delegate = bookVC;
     
     self.window.rootViewController = splitVC;
-    
+    */
     
     self.window.backgroundColor = [UIColor whiteColor];
+    
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -109,6 +120,53 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
+
+- (void) configureForPadWithModel: (AGTLibrary *) library {
+    
+    // Controladores
+    AGTLibraryTableViewController *libTableVC = [[AGTLibraryTableViewController alloc] initWithModel:library
+                                                                                               style:UITableViewStylePlain];
+    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[self lastSelectedBookInModel: library]];
+    
+    
+    // Combinadores
+    UINavigationController *libNav = [[UINavigationController alloc] initWithRootViewController:libTableVC];
+    UINavigationController *bookNav = [[UINavigationController alloc] initWithRootViewController:bookVC];
+    
+    UISplitViewController *splitVC = [[UISplitViewController alloc] init];
+    splitVC.viewControllers = @[libNav, bookNav];
+    
+    
+    // Asignamos delegados
+    libTableVC.delegate = bookVC;
+    splitVC.delegate = bookVC;
+    
+    // Lo hacemos root
+    self.window.rootViewController = splitVC;
+}
+
+
+
+- (void) configureForPhoneWithModel: (AGTLibrary *) library {
+    
+    // Controlador
+    AGTLibraryTableViewController *libTableVC = [[AGTLibraryTableViewController alloc] initWithModel:library
+                                                                                               style:UITableViewStylePlain];
+    // Combinador
+    UINavigationController *libNav = [[UINavigationController alloc] initWithRootViewController:libTableVC];
+    
+    // Asignamos delegado, que será él mismo!
+    libTableVC.delegate = libTableVC;
+    
+    // Lo hacemos root
+    self.window.rootViewController = libNav;
+
+}
+
+
+
 
 
 #pragma marks - Utils

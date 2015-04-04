@@ -9,3 +9,5 @@
 #define FIRST_BOOT @"firstBoot"
 #define LAST_SELECTED_BOOK @"lastBook"
 #define FAVORITES_DICTIONARY @"favoritesDictionary"
+
+#define IS_IPHONE  UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone
