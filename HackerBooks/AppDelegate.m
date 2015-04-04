@@ -38,7 +38,6 @@
     BOOL isFirstBoot=NO;
     // Comprobamos si es el primer arranque
     if (![def boolForKey:FIRST_BOOT]) {
-        NSLog(@"Primer arranque!!!");
         [def setBool:YES
                 forKey:FIRST_BOOT];
         [def synchronize];
@@ -176,7 +175,6 @@
         
     // ... y si no es el primer arranque....
     } else {
-        NSLog(@"Leemos el json del disco");
         // Obtenemos el json del disco duro.
         /*json = [NSData dataWithContentsOfURL:[documentsUrl URLByAppendingPathComponent:@"books_readable.json"]
                                      options:NSDataReadingMappedIfSafe

@@ -99,7 +99,6 @@
                     // Pero si el tag ya ha sido catalogado...
                     } else {
                         
-                        
                         // Obtenemos del 'dictionaryOfTags' el array de libros que actualmente tienen
                         // el tag actual, convirtiéndolo en un NSMutableArray.
                         NSMutableArray *arr = [[self.dictionaryOfTags objectForKey:bookTag] mutableCopy];
