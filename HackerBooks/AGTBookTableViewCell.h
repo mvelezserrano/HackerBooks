@@ -11,7 +11,6 @@
 @interface AGTBookTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) IBOutlet UIImageView *bookIcon;
-@property (strong, nonatomic) IBOutlet UIImageView *downloadIcon;
 @property (strong, nonatomic) IBOutlet UILabel *bookTitle;
 @property (strong, nonatomic) IBOutlet UILabel *bookAuthors;
 

@@ -39,9 +39,6 @@
     
     [super viewWillAppear:animated];
     
-    
-    
-    
     if (IS_IPHONE) {
         
         // si estamos en landscape, añadimos la vista que tenemos para landscape
@@ -54,14 +51,12 @@
         /* Asegurarse de que no se ocupa toda la pantalla cuando
          estás en un combinador */
         self.edgesForExtendedLayout = UIRectEdgeNone;
-
+        // Si estoy dentro de un splitVC me pongo el botón
+        self.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
     }
     
     // Sincronizar modelo --> vista
     [self syncViewToModel];
-    
-    // Si estoy dentro de un splitVC me pongo el botón
-    self.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
 }
 
 

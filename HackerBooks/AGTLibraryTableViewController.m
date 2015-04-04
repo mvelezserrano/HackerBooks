@@ -26,12 +26,14 @@
         _model = model;
         self.title = @"Programming Library";
         
-        // Alta en notificación
+        // Alta en notificación de cambio de status favorito.
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self
                selector:@selector(notifyThatFavoriteChange:)
                    name:BOOK_FAVORITE_NOTIFICATION_NAME
                  object:nil];
+        
+        // Alta en notificación de PDF descargado.
         [nc addObserver:self
                selector:@selector(notifyThatPDFDownloaded:)
                    name:BOOK_DOWNLOADED
@@ -86,37 +88,6 @@
     return [[self.model booksForTag:[[self.model tags] objectAtIndex:section]] count];
 }
 
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    // Averiguar de qué libro estamos hablando
-    AGTBook *book = [self.model bookForTag:[[self.model tags] objectAtIndex:indexPath.section]
-                                   atIndex:indexPath.row];
-    
-    //NSLog(@"Section: %d, Row: %d", indexPath.section, indexPath.row);
-    
-    // Crear una celda
-    static NSString *cellId = @"BookCell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
-    
-    if (cell == nil) {
-        // La tenemos que crear nosotros desde cero
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                      reuseIdentifier:cellId];
-    }
-
-    
-    // Sincronizar modelo (libro) --> vista (celda)
-    cell.imageView.image = [UIImage imageWithData: [NSData dataWithContentsOfURL:book.imageURL]];
-    cell.textLabel.text = book.title;
-    cell.detailTextLabel.text = book.authors;
-    
-    
-    // Devolvemos la celda
-    return cell;
-}
-*/
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -135,6 +106,7 @@
                                                             forIndexPath:indexPath];
     
     // Sincronizar modelo (libro) --> vista (celda)
+    // Si el PDF ya se ha descargado, se verá el libro abierto, si no, el cerrado
     if (book.downloaded) {
         cell.bookIcon.image = [UIImage imageNamed:@"open_book.png"];
     } else {
