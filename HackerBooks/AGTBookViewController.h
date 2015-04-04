@@ -21,6 +21,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *bookTags;
 @property (weak, nonatomic) IBOutlet UISwitch *favoriteSwitch;
 
+@property (strong, nonatomic) IBOutlet UIView *portraitView;
+
 // Vista horizontal
 @property (weak, nonatomic) IBOutlet UIImageView *bookImageLandscape;
 @property (weak, nonatomic) IBOutlet UILabel *bookTitleLandscape;

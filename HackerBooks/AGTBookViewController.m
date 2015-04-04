@@ -39,20 +39,32 @@
     
     [super viewWillAppear:animated];
     
+    /* Asegurarse de que no se ocupa toda la pantalla cuando
+     estás en un combinador */
+    //self.edgesForExtendedLayout = UIRectEdgeNone;
     
+    
+    
+    if (IS_IPHONE) {
+        [self addViewWithProperFrameForOrientation: @"landscape"];
+        [self addViewWithProperFrameForOrientation: @"portrait"];
+    
+        // si estamos en landscape, añadimos la vista que tenemos para landscape
+        if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+            NSLog(@"Al cargar... detecta que estamos en horizontal");
+            //[self addViewWithProperFrameForOrientation: @"landscape"];
+            self.landscapeView.hidden = NO;
+            self.portraitView.hidden = YES;
+        } else {
+            NSLog(@"Al cargar... detecta que estamos en vertical");
+            //[self addViewWithProperFrameForOrientation: @"portrait"];
+            self.landscapeView.hidden = YES;
+            self.portraitView.hidden = NO;
+        }
+    }
     
     // Sincronizar modelo --> vista
     [self syncViewToModel];
-    
-    // si estamos en landscape, añadimos la vista que tenemos para landscape
-    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
-        [self addLandscapeViewWithProperFrame];
-    }
-    
-    /* Asegurarse de que no se ocupa toda la pantalla cuando
-     estás en un combinador */
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-
     
     // Si estoy dentro de un splitVC me pongo el botón
     self.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
@@ -60,24 +72,44 @@
 
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    
     if (UIInterfaceOrientationIsLandscape(fromInterfaceOrientation)) {
+        NSLog(@"Rotamos a vertical.");
         // estamos en portrait
-        [self.landscapeView removeFromSuperview];
+        //[self.landscapeView removeFromSuperview];
+        //[self addViewWithProperFrameForOrientation: @"portrait"];
+        self.landscapeView.hidden = YES;
+        self.portraitView.hidden = NO;
     }
     else {
+        NSLog(@"Rotamos a horizontal.");
         // estamos en landscape
-        [self addLandscapeViewWithProperFrame];
+        //[self.portraitView removeFromSuperview];
+        //[self addViewWithProperFrameForOrientation: @"landscape"];
+        self.landscapeView.hidden = NO;
+        self.portraitView.hidden = YES;
     }
 }
 
-- (void)addLandscapeViewWithProperFrame
-{
+- (void)addViewWithProperFrameForOrientation: (NSString *) orientation{
     // asignamos el frame a la vista en portrait para que se redimensione
     // si la añadimos directamente como view, al no estar dentro de un VC, no se va a redimensionar
     CGRect iPhoneScreen = [[UIScreen mainScreen] bounds];
-    CGRect portraitRect = CGRectMake(0, 0, iPhoneScreen.size.height, iPhoneScreen.size.width);
-    self.landscapeView.frame = portraitRect;
-    [self.view addSubview:self.landscapeView];
+    
+    
+    if ([orientation  isEqual: @"portrait"]) {
+        NSLog(@"Estamos en vertical");
+        CGRect portraitRect = CGRectMake(0, 0, iPhoneScreen.size.width, iPhoneScreen.size.height);
+        self.portraitView.frame = portraitRect;
+        [self.view addSubview:self.portraitView];
+    } else {
+        NSLog(@"Estamos en horizontal");
+        CGRect landscapeRect = CGRectMake(0, 0, iPhoneScreen.size.height, iPhoneScreen.size.width);
+        self.landscapeView.frame = landscapeRect;
+        [self.view addSubview:self.landscapeView];
+    }
+    
 }
 
 
