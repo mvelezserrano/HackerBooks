@@ -69,13 +69,11 @@
     
     
     if (UIInterfaceOrientationIsLandscape(fromInterfaceOrientation)) {
-        NSLog(@"Rotamos a vertical.");
         // estamos en portrait
         [self.landscapeView removeFromSuperview];
         [self addViewWithProperFrameForOrientation: @"portrait"];
     }
     else {
-        NSLog(@"Rotamos a horizontal.");
         // estamos en landscape
         [self.portraitView removeFromSuperview];
         [self addViewWithProperFrameForOrientation: @"landscape"];

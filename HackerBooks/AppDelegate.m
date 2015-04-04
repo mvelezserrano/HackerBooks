@@ -71,28 +71,6 @@
         [self configureForPhoneWithModel: library];
     }
     
-    /*
-    // Controladores
-    AGTBookViewController *bookVC = [[AGTBookViewController alloc] initWithModel:[self lastSelectedBookInModel: library]];
-    AGTLibraryTableViewController *libTableVC = [[AGTLibraryTableViewController alloc] initWithModel:library
-                                                                                               style:UITableViewStylePlain];
-    
-    
-    // Combinadores
-    UINavigationController *libNav = [[UINavigationController alloc] initWithRootViewController:libTableVC];
-    UINavigationController *bookNav = [[UINavigationController alloc] initWithRootViewController:bookVC];
-    
-    UISplitViewController *splitVC = [[UISplitViewController alloc] init];
-    splitVC.viewControllers = @[libNav, bookNav];
-    
-    
-    // Asignamos delegados
-    libTableVC.delegate = bookVC;
-    splitVC.delegate = bookVC;
-    
-    self.window.rootViewController = splitVC;
-    */
-    
     self.window.backgroundColor = [UIColor whiteColor];
     
     [self.window makeKeyAndVisible];
@@ -164,8 +142,6 @@
     self.window.rootViewController = libNav;
 
 }
-
-
 
 
 

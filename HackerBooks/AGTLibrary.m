@@ -91,8 +91,10 @@
                                                   forKey:bookTag];
                         
                         // Finalmente añadimos el tag al NSMutableArray 'arrayOfTags' que contiene todos
-                        // los tags sin que se repitan.
-                        [self.arrayOfTags addObject:bookTag];
+                        // los tags sin que se repitan, siempre y cuando no sea el tag "Favorite".
+                        if (![bookTag isEqual:@"Favorites"]) {
+                            [self.arrayOfTags addObject:bookTag];
+                        }
                     
                     // Pero si el tag ya ha sido catalogado...
                     } else {
@@ -108,12 +110,6 @@
                                                   forKey:bookTag];
                     }
                 }
-                
-                // Convertimos el libro en un diccionario...
-                //NSDictionary *dictBook = [book asJSONDictionary];
-                
-                // ... y lo añadimos al array de diccionarios de libros actualizados.
-                //[self.arrayOfUpdatedBookDicts addObject:dictBook];
             }
         }else{
             NSLog(@"Error al parsear JSON: %@", err.localizedDescription);
@@ -123,9 +119,6 @@
         
         // Ordenamos alfabéticamente los libros...
         [self.arrayOfBooks sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-        
-        // Eliminamos el tag 'Favorites' ....
-        [self.arrayOfTags removeObject:@"Favorites"];
         
         // Ordenamos alfabéticamente los tags...
         [self.arrayOfTags sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];

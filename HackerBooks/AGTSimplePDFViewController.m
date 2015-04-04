@@ -17,7 +17,6 @@
     
     if (self = [super initWithNibName:nil
                                bundle:nil]) {
-        
         _model = model;
     }
     
@@ -135,7 +134,6 @@
                   MIMEType:@"application/pdf"
           textEncodingName:@"utf-8"
                    baseURL:nil];
-    //[self.browser loadRequest:[NSURLRequest requestWithURL:pdfLocalUrl]];
 }
 
 

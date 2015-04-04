@@ -24,36 +24,30 @@
     if (self = [super initWithStyle:style]) {
         _model = model;
         self.title = @"AGT Library";
+        
+        // Alta en notificación
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self
+               selector:@selector(notifyThatFavoriteChange:)
+                   name:BOOK_FAVORITE_NOTIFICATION_NAME
+                 object:nil];
     }
+    
     return self;
 }
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
-    // Alta en notificación
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self
-           selector:@selector(notifyThatFavoriteChange:)
-               name:BOOK_FAVORITE_NOTIFICATION_NAME
-             object:nil];
 }
 
 
-- (void) viewWillDisappear:(BOOL)animated{
-    
-    [super viewWillDisappear:animated];
+- (void) dealloc {
     
     // Me doy de baja de las notificaciones
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -179,14 +173,11 @@
 // BOOK_FAVORITE_NOTIFICATION_NAME     --> Para saber los métodos que reciben esta notificación.
 - (void) notifyThatFavoriteChange:(NSNotification *) notification {
     
-    //NSLog(@"Tabla notificada del cambio de favorito");
-    
     // Sacamos el libro cambiado
     AGTBook *book = [notification.userInfo objectForKey:BOOK_KEY];
     
     // Actualizar la librería añadiendo el libro al tag 'Favorite'
     [self.model setBookFavorite:book];
-    
     
     // Recargar la tabla
     [self.tableView reloadData];
