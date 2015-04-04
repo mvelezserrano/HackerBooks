@@ -161,12 +161,12 @@
 				552CC6851AC5DC450000FBE8 /* AGTBookViewController.h */,
 				552CC6861AC5DC450000FBE8 /* AGTBookViewController.m */,
 				552CC6871AC5DC450000FBE8 /* AGTBookViewController.xib */,
+				55EE13F21ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib */,
 				55EE13EA1ACB103C009AC512 /* AGTSimplePDFViewController.h */,
 				55EE13EB1ACB103C009AC512 /* AGTSimplePDFViewController.m */,
 				55EE13EC1ACB103C009AC512 /* AGTSimplePDFViewController.xib */,
 				55EE13EF1ACB1FA1009AC512 /* AGTLibraryTableViewController.h */,
 				55EE13F01ACB1FA1009AC512 /* AGTLibraryTableViewController.m */,
-				55EE13F21ACFBE26009AC512 /* AGTBookViewControlleriPhone.xib */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";

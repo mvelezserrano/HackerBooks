@@ -39,28 +39,22 @@
     
     [super viewWillAppear:animated];
     
-    /* Asegurarse de que no se ocupa toda la pantalla cuando
-     estás en un combinador */
-    //self.edgesForExtendedLayout = UIRectEdgeNone;
     
     
     
     if (IS_IPHONE) {
-        [self addViewWithProperFrameForOrientation: @"landscape"];
-        [self addViewWithProperFrameForOrientation: @"portrait"];
-    
+        
         // si estamos en landscape, añadimos la vista que tenemos para landscape
         if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
-            NSLog(@"Al cargar... detecta que estamos en horizontal");
-            //[self addViewWithProperFrameForOrientation: @"landscape"];
-            self.landscapeView.hidden = NO;
-            self.portraitView.hidden = YES;
+            [self addViewWithProperFrameForOrientation: @"landscape"];
         } else {
-            NSLog(@"Al cargar... detecta que estamos en vertical");
-            //[self addViewWithProperFrameForOrientation: @"portrait"];
-            self.landscapeView.hidden = YES;
-            self.portraitView.hidden = NO;
+            [self addViewWithProperFrameForOrientation: @"portrait"];
         }
+    } else {
+        /* Asegurarse de que no se ocupa toda la pantalla cuando
+         estás en un combinador */
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+
     }
     
     // Sincronizar modelo --> vista
@@ -77,36 +71,30 @@
     if (UIInterfaceOrientationIsLandscape(fromInterfaceOrientation)) {
         NSLog(@"Rotamos a vertical.");
         // estamos en portrait
-        //[self.landscapeView removeFromSuperview];
-        //[self addViewWithProperFrameForOrientation: @"portrait"];
-        self.landscapeView.hidden = YES;
-        self.portraitView.hidden = NO;
+        [self.landscapeView removeFromSuperview];
+        [self addViewWithProperFrameForOrientation: @"portrait"];
     }
     else {
         NSLog(@"Rotamos a horizontal.");
         // estamos en landscape
-        //[self.portraitView removeFromSuperview];
-        //[self addViewWithProperFrameForOrientation: @"landscape"];
-        self.landscapeView.hidden = NO;
-        self.portraitView.hidden = YES;
+        [self.portraitView removeFromSuperview];
+        [self addViewWithProperFrameForOrientation: @"landscape"];
     }
+    
+    [self syncViewToModel];
 }
 
 - (void)addViewWithProperFrameForOrientation: (NSString *) orientation{
     // asignamos el frame a la vista en portrait para que se redimensione
     // si la añadimos directamente como view, al no estar dentro de un VC, no se va a redimensionar
     CGRect iPhoneScreen = [[UIScreen mainScreen] bounds];
-    
+    CGRect drawRect = CGRectMake(0, 0, iPhoneScreen.size.width, iPhoneScreen.size.height);
     
     if ([orientation  isEqual: @"portrait"]) {
-        NSLog(@"Estamos en vertical");
-        CGRect portraitRect = CGRectMake(0, 0, iPhoneScreen.size.width, iPhoneScreen.size.height);
-        self.portraitView.frame = portraitRect;
+        self.portraitView.frame = drawRect;
         [self.view addSubview:self.portraitView];
     } else {
-        NSLog(@"Estamos en horizontal");
-        CGRect landscapeRect = CGRectMake(0, 0, iPhoneScreen.size.height, iPhoneScreen.size.width);
-        self.landscapeView.frame = landscapeRect;
+        self.landscapeView.frame = drawRect;
         [self.view addSubview:self.landscapeView];
     }
     
@@ -134,13 +122,9 @@
     }
     
     self.bookTitle.numberOfLines = 0;
-    [self.bookTitle sizeToFit];
-    
     self.bookAuthors.numberOfLines = 0;
-    [self.bookAuthors sizeToFit];
-    
     self.bookTags.numberOfLines = 0;
-    [self.bookTags sizeToFit];
+
     
     // Modo Apaisado
     self.title = self.model.title;
@@ -156,13 +140,8 @@
     }
 
     self.bookTitleLandscape.numberOfLines = 0;
-    [self.bookTitleLandscape sizeToFit];
-    
     self.bookAuthorsLandscape.numberOfLines = 0;
-    [self.bookAuthorsLandscape sizeToFit];
-    
     self.bookTagsLandscape.numberOfLines = 0;
-    [self.bookTagsLandscape sizeToFit];
 }
 
 
