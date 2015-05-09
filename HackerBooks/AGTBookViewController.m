@@ -158,16 +158,6 @@
     } else {
         self.model.isFavorite = NO;
     }
-    
-    // Mandamos una notificación por el cambio de favorito
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    
-    NSDictionary *dict = @{BOOK_KEY : self.model};
-    
-    NSNotification *n = [NSNotification notificationWithName:BOOK_FAVORITE_NOTIFICATION_NAME
-                                                      object:self
-                                                    userInfo:dict];
-    [nc postNotification:n];
 }
 
 
