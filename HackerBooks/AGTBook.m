@@ -57,4 +57,43 @@
     return [self.title localizedCaseInsensitiveCompare: other.title];
 }
 
+-(void) setIsFavorite:(BOOL)isFavorite {
+    
+    _isFavorite=isFavorite;
+    [self notifyChanges];
+}
+
+-(void) notifyChanges {
+    
+    // Mandamos una notificación por el cambio de favorito
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    NSDictionary *dict = @{BOOK_KEY : self};
+    
+    NSNotification *n = [NSNotification notificationWithName:BOOK_FAVORITE_NOTIFICATION_NAME
+                                                      object:self
+                                                    userInfo:dict];
+    [nc postNotification:n];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @end
